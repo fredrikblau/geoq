@@ -1,0 +1,2670 @@
+[
+    {
+        "category": "جاذبه",
+        "name": "جنگل حرا قشم",
+        "description": "جنگل حرا تنها جنگل ایران است که برای دیدن آن باید با قایق بروید. درخت‌های جنگل حرا ریشه در آب دارند و به جنگل دریایی معروف است. با جزر و مد دریا، درختان تا تنه به زیر آب می‌روند و با جزر ریشه‌هایشان پیدا می‌شود. درختان آب شور را جذب می‌کنند و آب شیرین برمی‌گردانند. همیشه‌بهارند و در خرداد گل‌های زردرنگی می‌رویند. زیست‌بوم پرندگان مهاجر و آبزیان برای تخم‌ریزی. عکاسی و ماهی‌گیری تفریحات اصلی.",
+        "address": "قشم، بین تنگه خوران و بندرخمیر",
+        "location": {
+            "latitude": 26.9167,
+            "longitude": 55.5833
+        },
+        "best_time_to_visit": "بهار، پاییز، زمستان",
+        "approx_cost": "ورودی: ۱۰ هزارتومان، نیم‌ساعت گشت با قایق: ۱۰۰ هزارتومان",
+        "duration_recommended": "بین ۱ تا ۲ ساعت",
+        "local_tips": "در دوره‌های جزر و مد نروید، قایقران‌ها می‌دانند. مناسب عکاسی، نامناسب شب‌مانی.",
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "جنگل حرا تنها جنگل ایران است که برای دیدن آن باید با قایق بروید.",
+        "confidence": 90
+    },
+    {
+        "category": "جاذبه",
+        "name": "ساحل نقره ای قشم",
+        "description": "ساحل درخشان با بازتاب نور به کانی‌های معدنی. گردشگران اجازه قدم‌زدن ندارند، فقط از دور تماشا. درخشش در روز و شب، بهترین زمان پاییز و بهار.",
+        "address": "جزیره قشم، جزیره هنگام",
+        "location": {
+            "latitude": 26.65,
+            "longitude": 55.75
+        },
+        "best_time_to_visit": "بهار، پاییز",
+        "approx_cost": "رایگان",
+        "duration_recommended": "بین ۱ تا ۲ ساعت",
+        "local_tips": "اجازه ورود ندارید، فقط از دور تماشا کنید.",
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "برای دیدن فرش ساحلی درخشان جزیره به ساحل نقره ای قشم بروید.",
+        "confidence": 90
+    },
+    {
+        "category": "جاذبه",
+        "name": "موزه ژئوپارک قشم",
+        "description": null,
+        "address": null,
+        "location": {
+            "latitude": 26.9167,
+            "longitude": 56.0667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "موزه ژئوپارک قشم",
+        "confidence": 70
+    },
+    {
+        "category": "جاذبه",
+        "name": "سد گوران قشم",
+        "description": null,
+        "address": null,
+        "location": {
+            "latitude": 26.7167,
+            "longitude": 55.6167
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "سد گوران قشم",
+        "confidence": 70
+    },
+    {
+        "category": "جاذبه",
+        "name": "دره مجسمه ها",
+        "description": null,
+        "address": null,
+        "location": {
+            "latitude": 26.6333,
+            "longitude": 55.3167
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "دره مجسمه ها یا دره تندیس‌ها",
+        "confidence": 70
+    },
+    {
+        "category": "جاذبه",
+        "name": "دره چاهکوه",
+        "description": null,
+        "address": null,
+        "location": {
+            "latitude": 26.6167,
+            "longitude": 55.75
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "دره چاهکوه",
+        "confidence": 70
+    },
+    {
+        "category": "جاذبه",
+        "name": "جزایر ناز قشم",
+        "description": null,
+        "address": null,
+        "location": {
+            "latitude": 26.7833,
+            "longitude": 56.0833
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "جزایر ناز قشم",
+        "confidence": 70
+    },
+    {
+        "category": "جاذبه",
+        "name": "روستای لافت قشم",
+        "description": null,
+        "address": null,
+        "location": {
+            "latitude": 26.8833,
+            "longitude": 55.7667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "روستای لافت قشم",
+        "confidence": 70
+    },
+    {
+        "category": "جاذبه",
+        "name": "غار خربس قشم",
+        "description": null,
+        "address": null,
+        "location": {
+            "latitude": 26.6167,
+            "longitude": 55.8833
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "غار خربس قشم",
+        "confidence": 70
+    },
+    {
+        "category": "جاذبه",
+        "name": "روستای شیب دراز",
+        "description": null,
+        "address": null,
+        "location": {
+            "latitude": 26.6667,
+            "longitude": 55.9167
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "روستای شیب دراز",
+        "confidence": 70
+    },
+    {
+        "category": "جاذبه",
+        "name": "پارک کررو",
+        "description": null,
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "پارک کررو",
+        "confidence": 70
+    },
+    {
+        "category": "جاذبه",
+        "name": "تنگه کریان",
+        "description": null,
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "تنگه کریان",
+        "confidence": 70
+    },
+    {
+        "category": "جاذبه",
+        "name": "پارک کروکودیل قشم",
+        "description": null,
+        "address": null,
+        "location": {
+            "latitude": 26.8333,
+            "longitude": 55.5333
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "پارک کروکودیل قشم",
+        "confidence": 70
+    },
+    {
+        "category": "جاذبه",
+        "name": "باغ موزه گیاه‌شناسی قشم",
+        "description": null,
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "باغ موزه گیاه‌شناسی قشم",
+        "confidence": 70
+    },
+    {
+        "category": "رویداد",
+        "name": "جشن نخل و خرما",
+        "description": "جشن نخل و خرما از شادترین جشنواره‌های مردم قشم است که در آن باغداران انواع خرماها و فراورده‌های آن را نمایش می‌دهند. مردم فرصت دیدن تنوع خرماها و خرید محصولات خرمایی مثل شیره، سرکه، نان، بیسکوییت، رولت و مربا را دارند. صنایع‌دستی مثل زنبیل، سبد، دمپایی و جارو از لیفه و چوب خرما ساخته می‌شوند.",
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "جشن نخل و خرما از شادترین و شورانگیزترین جشنواره‌های مردم قشم است",
+        "confidence": 80
+    },
+    {
+        "category": "رویداد",
+        "name": "مراسم زار",
+        "description": "مردم بومی قشم اعتقاد دارند که آدم‌ها وقتی بیمار می‌شوند که بادهای زار به آن‌ها برخورد کنند و اجنه به تنشان نفوذ کنند. ماما زار یا بابا زار با نواختن دهل و آوازخوانی، جن را از بدن بیمار خارج می‌کند.",
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "مراسم زار",
+        "confidence": 80
+    },
+    {
+        "category": "رویداد",
+        "name": "مراسم قبله دعا",
+        "description": "این مراسم نوعی دعای باران است. وقتی مدت زیادی باران نمی‌بارد، مردم به بیرون شهر می‌روند و با پختن غذا و پخش آن در میان فقرا و پرندگان و حیوانات از خدا طلب باران می‌کنند.",
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "مراسم قبله دعا",
+        "confidence": 80
+    },
+    {
+        "category": "رویداد",
+        "name": "مولودی‌خوانی",
+        "description": "مولودی مدح و قصائدی است که مردم در وصف حضرت محمد (ص) می‌خوانند. در مراسم عروسی، عیدها و دعاخوانی مساجد رایج است. اکثر اهالی قشم اهل تسنن هستند؛ بنابراین مولودی‌خوانی روز میلاد حضرت رسول و عید فطر با آداب بیشتری انجام می‌شود.",
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "مولودی‌خوانی",
+        "confidence": 80
+    },
+    {
+        "category": "رویداد",
+        "name": "نوروز صیاد",
+        "description": "روستاییان قشم، اول مرداد هر سال را با نام نوروز صیاد می‌شناسند. در این روز صید انجام نمی‌شود و کسی ماهی نمی‌خورد. همه به دریا می‌روند و سر و تن خود را با آب دریا می‌شویند تا از بیماری در امان باشند. لوبن فردی است که برای سلامتی احشام و مزارع دعا می‌خواند.",
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": "اول مرداد",
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "نوروز صیاد",
+        "confidence": 80
+    },
+    {
+        "category": "رویداد",
+        "name": "جشنواره میگو",
+        "description": "در ۲۴ و ۲۵ آبان هر سال در قشم جشن میگو برگزار می‌شود. بیشترین میگوی منطقه در قشم صید می‌شود. جشنی به شکرانه این نعمت برپا می‌شود و غرفه‌های صنایع دستی هم فعالیت می‌کنند.",
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": "۲۴ و ۲۵ آبان",
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "جشنواره میگو",
+        "confidence": 80
+    },
+    {
+        "category": "رستوران",
+        "name": "رستوران شب‌های طلایی",
+        "description": null,
+        "address": "قشم، ساحلی جنوبی، نرسیده به بلوار مشاهیر، پارک زیتون",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "لوکس",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "09363974103",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "رستوران شب‌های طلایی",
+        "confidence": 85
+    },
+    {
+        "category": "رستوران",
+        "name": "رستوران بادیل",
+        "description": null,
+        "address": "جزیره قشم، نخل زرین، خیابان پیام، روبروی برج های دوقلوی آپادانا",
+        "location": {
+            "latitude": 26.9333,
+            "longitude": 56.25
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "لوکس",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "07635242550",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "رستوران بادیل",
+        "confidence": 85
+    },
+    {
+        "category": "رستوران",
+        "name": "رستوران سنتی ناخدا امینی",
+        "description": null,
+        "address": "جزیره قشم ، روستای طبل ، روستای طبل، جنب مسجد اصلاح",
+        "location": {
+            "latitude": 26.7833,
+            "longitude": 55.6667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "متوسط",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "09177677601",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "رستوران سنتی ناخدا امینی",
+        "confidence": 85
+    },
+    {
+        "category": "رستوران",
+        "name": "رستوران خوان بوم",
+        "description": null,
+        "address": "جزیره قشم، بلوار امام قلی، خیابان خلیج فارس، روبروی درب جنوبی مجتمع تجاری ستاره، همکف هتل مارینا ۲، مجموعه رستوران های خوان بوم",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "لوکس",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "۰۷۶۳۵۲۴۱۳۱۳",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "رستوران خوان بوم",
+        "confidence": 85
+    },
+    {
+        "category": "رستوران",
+        "name": "رستوران سی‌رول",
+        "description": null,
+        "address": "جزیره قشم، خیابان دانش، حد فاصل چهار راه رسالت و میدان شهدا",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "اقتصادی",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "09172993136",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "رستوران سی‌رول",
+        "confidence": 85
+    },
+    {
+        "category": "رستوران",
+        "name": "رستوران لبنانی فطائر",
+        "description": null,
+        "address": "جزیره قشم، چهار راه رسالت، داخل خیابان دانش",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "اقتصادی",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "۰۷۶۳۵۲۲۵۵۰۰",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "رستوران لبنانی فطائر",
+        "confidence": 85
+    },
+    {
+        "category": "رستوران",
+        "name": "رستوران قلعه",
+        "description": null,
+        "address": "جزیره قشم، میدان ولایت، جنب قلعه پرتغالی‌ها",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "لوکس",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "۰۷۶۳۵۲۲۴۷۶۵",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "رستوران قلعه",
+        "confidence": 85
+    },
+    {
+        "category": "رستوران",
+        "name": "رستوران نعیم",
+        "description": null,
+        "address": "جزیره قشم، میدان امامقلی خان، جنب شهرک ساحلی، طبقه همکف، پلاک ۹۸۵",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "اقتصادی",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "۰76۳۵۲۴۲۴۹۴",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "رستوران نعیم",
+        "confidence": 85
+    },
+    {
+        "category": "رستوران",
+        "name": "رستوران حاج غفور",
+        "description": null,
+        "address": "جزیره قشم، بلوار خلیج فارس شرقی، جنب مسجد شیخ حاجی رمضان",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "متوسط",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "رستوران حاج غفور",
+        "confidence": 85
+    },
+    {
+        "category": "رستوران",
+        "name": "رستوران خاله",
+        "description": null,
+        "address": "جزیره قشم، جنب قلعه پرتقالی ها به سمت اتوبان، رستوران و فست فود سنتی خاله",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "لوکس",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "۰۷۶۳۵۲۲۵۶۱۱",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "رستوران خاله",
+        "confidence": 85
+    },
+    {
+        "category": "رستوران",
+        "name": "رستوران سنتی شب‌های دفاری",
+        "description": null,
+        "address": "جزیره قشم، بعد از شهرک گلزار، روستای دفاری، جنب مسجد جامع، رستوران شب‌های دفاری",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "لوکس",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "۰۹۱۷۱۹۹۹۹۳۶",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "رستوران سنتی شب‌های دفاری",
+        "confidence": 85
+    },
+    {
+        "category": "رستوران",
+        "name": "رستوران آبشار",
+        "description": null,
+        "address": "شعبه 1: جزیره قشم، میدان شهدای گمنام، روبروی مرکز خرید مرجان\nشعبه 2: جزیره قشم، بلوار ولیعصر، بالاتر از میدان گل‌ها، روبروی مرکز خرید خلیج فارس",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "لوکس",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "۰۷۶۳۵۲۴۷۱۳۸",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "رستوران آبشار",
+        "confidence": 85
+    },
+    {
+        "category": "رستوران",
+        "name": "رستوران دریا",
+        "description": null,
+        "address": "جزیره قشم، شهر درگهان، مجتمع تجاری دریا، رستوران مجلل دریا",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "لوکس",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "07635273590",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "رستوران دریا",
+        "confidence": 85
+    },
+    {
+        "category": "رستوران",
+        "name": "رستوران الوند",
+        "description": null,
+        "address": "جزیره قشم، بلوار آزادگان، جنوب غربی میدان شهدا، نبش خیابان الهیه، هتل الوند قشم",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "لوکس",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "۰۷۶۳۵۲۲۳۰۰۷",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "رستوران الوند",
+        "confidence": 85
+    },
+    {
+        "category": "رستوران",
+        "name": "رستوران امیران",
+        "description": null,
+        "address": "جزیره قشم، مجتمع سیتی سنتر۱، طبقه دوم، رستوران امیران",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "لوکس",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "۰۷۶۳۵۲۴۶۹۴۰",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "رستوران امیران",
+        "confidence": 85
+    },
+    {
+        "category": "هتل",
+        "name": "هتل آراکتا",
+        "description": null,
+        "address": "جزیره قشم، شهرک سام و زال، سام و زال غربی، هتل آراکتا قشم",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "از ۵.۰۰۰.۰۰۰ تومان تا ۱۳.۰۰۰.۰۰۰ تومان",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "هتل آراکتا",
+        "confidence": 85
+    },
+    {
+        "category": "هتل",
+        "name": "هتل آوینا",
+        "description": null,
+        "address": "جزیره قشم، بلوار باهنر",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "از ۳.۰۰۰.۰۰۰ تومان تا ۵.۲۰۰.۰۰۰ تومان",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "هتل آوینا",
+        "confidence": 85
+    },
+    {
+        "category": "هتل",
+        "name": "هتل آتامان",
+        "description": null,
+        "address": "جزیره قشم، میدان حافظ، به سمت میدان امام قلی خان، بلوار گلستان",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "از ۳.۳۰۰.۰۰۰ تومان تا ۷.۵۰۰.۰۰۰ تومان",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "هتل آتامان",
+        "confidence": 85
+    },
+    {
+        "category": "هتل",
+        "name": "هتل آرتا",
+        "description": null,
+        "address": "جزیره قشم، بلوار شهید بهشتی، رو به روی منازل مسکونی علی بن ابی طالب",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "از ۲.۰۰۰.۰۰۰ تومان تا ۵.۰۰۰.۰۰۰ تومان",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "هتل آرتا",
+        "confidence": 85
+    },
+    {
+        "category": "هتل",
+        "name": "هتل ساحلی خلیج فارس",
+        "description": null,
+        "address": "جزیره قشم، میدان علم و صنعت",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "از ۹۰۰.۰۰۰ تومان تا ۱.۷۵۰.۰۰۰ تومان",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "هتل ساحلی خلیج فارس",
+        "confidence": 85
+    },
+    {
+        "category": "هتل",
+        "name": "هتل سینگو",
+        "description": null,
+        "address": "جزیره قشم، شهر درگهان، مجتمع تجاری دریا",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "از ۱.۶۵۰.۰۰۰ تومان تا ۵.۰۵۰.۰۰۰ تومان",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "هتل سینگو",
+        "confidence": 85
+    },
+    {
+        "category": "جاذبه",
+        "name": "جنگل حرا",
+        "description": "جنگل حرا یکی از جاذبه‌های طبیعی قشم است که در خلیج فارس واقع شده و بخشی از زیبایی‌های زمین‌شناسی جزیره را تشکیل می‌دهد.",
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "https://blog.rahbal.com/qeshm-island/",
+        "raw_excerpt": "این جاذبه‌های طبیعی گاهی به شکل جنگل حرا جلوه می‌کنند",
+        "confidence": "80"
+    },
+    {
+        "category": "جاذبه",
+        "name": "دره ستارگان",
+        "description": "دره ستارگان یک دره عجیب و یکی از جاذبه‌های طبیعی و زمین‌شناسی قشم است که گردشگران را جذب می‌کند.",
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "https://blog.rahbal.com/qeshm-island/",
+        "raw_excerpt": "گاهی یک دره عجیب مثل دره ستارگانند",
+        "confidence": "80"
+    },
+    {
+        "category": "جاذبه",
+        "name": "کوه نمکی",
+        "description": "کوه نمکی بزرگ که به‌تازگی رخ نشان داده و یکی از جاذبه‌های طبیعی قشم محسوب می‌شود.",
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "https://blog.rahbal.com/qeshm-island/",
+        "raw_excerpt": "گاهی مثل یک کوه نمکی بزرگند که به‌تازگی رخ نشان داده‌ است.",
+        "confidence": "70"
+    },
+    {
+        "category": "تفریح",
+        "name": "غواصی در قشم",
+        "description": "غواصی در قشم شامل آموزش ۲۰ دقیقه‌ای و رفتن به عمق ۲ تا ۵ متری زیر آب با مربیان حرفه‌ای است. مناسب برای افراد بالای ۱۰ سال.",
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "۸۵۰ هزارتومان برای غواصی معمولی، ۱۴۰ هزارتومان برای عکاسی زیر آب، ۲۰۰ هزارتومان برای فیلمبرداری یک دقیقه‌ای",
+        "duration_recommended": "حدود ۱.۵ ساعت (۱۵ دقیقه زیر آب)",
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "https://blog.rahbal.com/qeshm-island/",
+        "raw_excerpt": "برای این کار فقط به ۲۰ دقیقه آموزش غواصی نیاز دارید تا دل به دریا بزنید.",
+        "confidence": "90"
+    },
+    {
+        "category": "تفریح",
+        "name": "قایق‌سواری در قشم",
+        "description": "قایق‌سواری با قایق‌های تندرو برای تماشای دلفین‌ها و خلیج فارس، بدون محدودیت سنی.",
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": "روزهای آفتابی و آرام",
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": "جلیقه نجات بپوشید و در روزهای طوفانی نروید.",
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "https://blog.rahbal.com/qeshm-island/",
+        "raw_excerpt": "تصور کنید با جمعی از رفقای صمیمی‌تان سوار قایق‌های تندرو قشم شدید",
+        "confidence": "85"
+    },
+    {
+        "category": "تفریح",
+        "name": "شاتل‌سواری در قشم",
+        "description": "شاتل‌سواری روی تیوپ‌های بادی بزرگ که توسط قایق موتوری کشیده می‌شود.",
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "۲۵۰ هزارتومان",
+        "duration_recommended": "۱۵ دقیقه",
+        "local_tips": "جلیقه نجات بپوشید و دسته‌ها را محکم بگیرید.",
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "https://blog.rahbal.com/qeshm-island/",
+        "raw_excerpt": "موج‌سواری روی تیوپ‌های بادی آن هم در تلاطم موج‌های بزرگ و کوچک خلیج همیشه فارس",
+        "confidence": "90"
+    },
+    {
+        "category": "تفریح",
+        "name": "بناناسواری در قشم",
+        "description": "بناناسواری روی تیوپ‌های موزی شکل با ظرفیت تا ۵ نفر، هیجان بیشتر از شاتل‌سواری.",
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "۳۴۰.۰۰۰ تومان",
+        "duration_recommended": "۱۵ دقیقه",
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "https://blog.rahbal.com/qeshm-island/",
+        "raw_excerpt": "تیوپ‌های بادی را به شکل موز‌های دراز و زردرنگ تصور کنید که تا ۵ نفر ظرفیت دارند.",
+        "confidence": "90"
+    },
+    {
+        "category": "تفریح",
+        "name": "پاراسل در قشم",
+        "description": "پاراسل‌سواری با چتر تا ارتفاع ۳۰۰ متری روی دریا، ظرفیت ۱ تا ۳ نفر.",
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "۴۰۰.۰۰۰ تومان",
+        "duration_recommended": "۵ تا ۱۵ دقیقه",
+        "local_tips": "برای کودکان ارتفاع تا ۱۰۰ متر کاهش می‌یابد.",
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "https://blog.rahbal.com/qeshm-island/",
+        "raw_excerpt": "با چتربازی تا ارتفاع ۳۰۰متری روی زلال آبی دریا پرواز کنید",
+        "confidence": "90"
+    },
+    {
+        "category": "تفریح",
+        "name": "فلای بورد در قشم",
+        "description": "فلای بورد سواری با لوله متصل به جت اسکی، نیاز به جرئت و مهارت.",
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "۱۷۰.۰۰۰ تومان",
+        "duration_recommended": "۱۵ دقیقه",
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "https://blog.rahbal.com/qeshm-island/",
+        "raw_excerpt": "قدرت و سرعت خارق‌العاده جریان آب در لوله، لوله و سرنشینش را به رقص در می‌آورد.",
+        "confidence": "85"
+    },
+    {
+        "category": "تفریح",
+        "name": "اسکوتر زیردریایی در قشم",
+        "description": "اسکوتر زیردریایی برای کاوش زیر آب بدون نیاز به شنا یا غواصی، با مربی.",
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": "برای افراد بدون بیماری قلبی، فشار خون یا تنفسی مناسب است.",
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "https://blog.rahbal.com/qeshm-island/",
+        "raw_excerpt": "می‌توانید آزادانه زیر آب حرکت کنید.",
+        "confidence": "85"
+    },
+    {
+        "category": "تفریح",
+        "name": "جت اسکی در قشم",
+        "description": "جت اسکی سواری روی آب، ظرفیت ۱ تا ۳ نفر، محدودیت سنی ۲۰ سال.",
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "۱.۰۵۰.۰۰۰ تومان",
+        "duration_recommended": "۱۵ دقیقه",
+        "local_tips": "اگر وزن زیاد دارید، یک‌نفره رزرو کنید.",
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "https://blog.rahbal.com/qeshm-island/",
+        "raw_excerpt": "لذت جت‌ اسکی سواری در قشم را از دست ندهند.",
+        "confidence": "90"
+    },
+    {
+        "category": "تفریح",
+        "name": "اسکی روی آب در قشم",
+        "description": "اسکی روی آب با طناب متصل به قایق، نیاز به حفظ تعادل.",
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "۲۵۰.۰۰۰ تومان",
+        "duration_recommended": "۱۵ دقیقه",
+        "local_tips": "دست‌های قوی برای نگه داشتن طناب لازم است.",
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "https://blog.rahbal.com/qeshm-island/",
+        "raw_excerpt": "اسکی روی آب ساده‌ترین تفریح آبی قشم است",
+        "confidence": "85"
+    },
+    {
+        "category": "تفریح",
+        "name": "کشتی تفریحی قشم",
+        "description": "کشتی تفریحی با موسیقی زنده، پذیرایی، کافه و غرفه عکاسی.",
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "۲۳۰.۰۰۰ تومان",
+        "duration_recommended": "۲ ساعت",
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "https://blog.rahbal.com/qeshm-island/",
+        "raw_excerpt": "کشتی‌های تفریحی قشم جان می‌دهند برای زمانی که می‌خواهید در جمع دوستان و خانواده‌تان",
+        "confidence": "90"
+    },
+    {
+        "category": "تفریح",
+        "name": "شهربازی سیتی سنتر",
+        "description": "بزرگ‌ترین شهربازی سرپوشیده قشم با بیش از ۲۴۰ دستگاه بازی، سالن بیلیارد و بولینگ.",
+        "address": "جزیره قشم، بلوار دریا، مرکز تجاری سیتی‌سنتر ۱، طبقه دوم",
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "07635241501",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "https://blog.rahbal.com/qeshm-island/",
+        "raw_excerpt": "شهربازی سیتی سنتر قشم بزرگ‌ترین شهربازی سرپوشیده قشم است",
+        "confidence": "95"
+    },
+    {
+        "category": "تفریح",
+        "name": "پاراگلایدر قشم",
+        "description": "پاراگلایدر سواری در سواحل قشم تا ارتفاع ۳۰۰۰ پایی.",
+        "address": "کلوپ عجایب آبی، کلوپ دلفین آبی، مجموعه تفریحی آسمان، سواحل زیتون، روستای شیب دراز و جزایر ناز و نقره‌ای قشم",
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "۱.۱۰۰.۰۰۰ تومان",
+        "duration_recommended": "۱۵ دقیقه",
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "https://blog.rahbal.com/qeshm-island/",
+        "raw_excerpt": "پاراگلایدرسواری در مناطقی نزدیک به سواحل قشم انجام می‌شود.",
+        "confidence": "85"
+    },
+    {
+        "category": "تفریح",
+        "name": "تور آفرود و سافاری در قشم",
+        "description": "تور آفرود و سافاری در پارک‌های محلی، مناطق حفاظت‌شده و صحراهای قشم با خودروهای آفرود مانند لندکروز.",
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "https://blog.rahbal.com/qeshm-island/",
+        "raw_excerpt": "تورهای آفرود و سافاری قشم برای کسانی است که دوست دارند طبیعت وحشی این جزیره را کشف کنند.",
+        "confidence": "80"
+    },
+    {
+        "category": "جاذبه",
+        "name": "دره ستارگان",
+        "description": "دره ستارگان با مخروط‌ها، ستون‌ها و دیوارهای بلند، افسانه‌های محلی و صداهای عجیب، مناسب برای رصد ستارگان شبانه.",
+        "address": "جنوب‌شرقی جزیره قشم، نزدیک روستای برکه خلف",
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": "پاییز و زمستان",
+        "approx_cost": "۱۵ هزارتومان برای ایرانیان، ۱۰۰ هزارتومان برای خارجیان (۱۴۰۲)",
+        "duration_recommended": "۲ تا ۳ ساعت",
+        "local_tips": "برای بازدید شبانه مجوز از حراست لازم است.",
+        "contact": {
+            "phone": "07635242282",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "https://blog.rahbal.com/qeshm-island/",
+        "raw_excerpt": "اولین جاذبه از عجایب هفتگانه قشم، دره ستارگان است.",
+        "confidence": "95"
+    },
+    {
+        "category": "جاذبه",
+        "name": "غار نمکدان قشم",
+        "description": "طولانی‌ترین غار نمکی جهان با طول بیش از ۶۴۰۰ متر، بخشی از گنبد نمکی ۵۷۰ میلیون ساله، با قندیل‌ها و نقش‌ونگارهای زیبا.",
+        "address": "جزیره قشم، میان روستای سلخ و کانی، جاده غار نمکدان",
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": "بهار، پاییز، زمستان",
+        "approx_cost": "۱۵ هزارتومان برای ایرانیان، ۱۰۰ هزارتومان برای خارجیان (۱۴۰۲)",
+        "duration_recommended": "۱ تا ۲ ساعت",
+        "local_tips": "چراغ قوه، خوراکی و آب همراه داشته باشید. برای دالان‌های دوم و سوم تجهیزات غارنوردی لازم است.",
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "https://blog.rahbal.com/qeshm-island/",
+        "raw_excerpt": "غار نمکدان قشم طولانی‌ترین غار نمکی جهان است",
+        "confidence": "95"
+    },
+    {
+        "category": "جاذبه",
+        "name": "جنگل حرا قشم",
+        "description": "جنگل حرا تنها جنگل ایران است که برای دیدن آن باید با قایق بروید. درخت‌های جنگل حرا ریشه در آب دارند و به جنگل دریایی معروف است. با جزر و مد دریا، درختان تا تنه به زیر آب می‌روند و با جزر ریشه‌هایشان پیدا می‌شود. درختان آب شور را جذب می‌کنند و آب شیرین برمی‌گردانند. همیشه‌بهارند و در خرداد گل‌های زردرنگی می‌رویند. زیست‌بوم پرندگان مهاجر و آبزیان برای تخم‌ریزی. عکاسی و ماهی‌گیری تفریحات اصلی.",
+        "address": "قشم، بین تنگه خوران و بندرخمیر",
+        "location": {
+            "latitude": 26.9167,
+            "longitude": 55.5833
+        },
+        "best_time_to_visit": "بهار، پاییز، زمستان",
+        "approx_cost": "ورودی: ۱۰ هزارتومان، نیم‌ساعت گشت با قایق: ۱۰۰ هزارتومان",
+        "duration_recommended": "بین ۱ تا ۲ ساعت",
+        "local_tips": "در دوره‌های جزر و مد نروید، قایقران‌ها می‌دانند. مناسب عکاسی، نامناسب شب‌مانی.",
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "جنگل حرا تنها جنگل ایران است که برای دیدن آن باید با قایق بروید.",
+        "confidence": 90
+    },
+    {
+        "category": "جاذبه",
+        "name": "ساحل نقره ای قشم",
+        "description": "ساحل درخشان با بازتاب نور به کانی‌های معدنی. گردشگران اجازه قدم‌زدن ندارند، فقط از دور تماشا. درخشش در روز و شب، بهترین زمان پاییز و بهار.",
+        "address": "جزیره قشم، جزیره هنگام",
+        "location": {
+            "latitude": 26.65,
+            "longitude": 55.75
+        },
+        "best_time_to_visit": "بهار، پاییز",
+        "approx_cost": "رایگان",
+        "duration_recommended": "بین ۱ تا ۲ ساعت",
+        "local_tips": "اجازه ورود ندارید، فقط از دور تماشا کنید.",
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "برای دیدن فرش ساحلی درخشان جزیره به ساحل نقره ای قشم بروید.",
+        "confidence": 90
+    },
+    {
+        "category": "جاذبه",
+        "name": "موزه ژئوپارک قشم",
+        "description": null,
+        "address": null,
+        "location": {
+            "latitude": 26.9167,
+            "longitude": 56.0667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "موزه ژئوپارک قشم",
+        "confidence": 70
+    },
+    {
+        "category": "جاذبه",
+        "name": "سد گوران قشم",
+        "description": null,
+        "address": null,
+        "location": {
+            "latitude": 26.7167,
+            "longitude": 55.6167
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "سد گوران قشم",
+        "confidence": 70
+    },
+    {
+        "category": "جاذبه",
+        "name": "دره مجسمه ها",
+        "description": null,
+        "address": null,
+        "location": {
+            "latitude": 26.6333,
+            "longitude": 55.3167
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "دره مجسمه ها یا دره تندیس‌ها",
+        "confidence": 70
+    },
+    {
+        "category": "جاذبه",
+        "name": "دره چاهکوه",
+        "description": null,
+        "address": null,
+        "location": {
+            "latitude": 26.6167,
+            "longitude": 55.75
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "دره چاهکوه",
+        "confidence": 70
+    },
+    {
+        "category": "جاذبه",
+        "name": "جزایر ناز قشم",
+        "description": null,
+        "address": null,
+        "location": {
+            "latitude": 26.7833,
+            "longitude": 56.0833
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "جزایر ناز قشم",
+        "confidence": 70
+    },
+    {
+        "category": "جاذبه",
+        "name": "روستای لافت قشم",
+        "description": null,
+        "address": null,
+        "location": {
+            "latitude": 26.8833,
+            "longitude": 55.7667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "روستای لافت قشم",
+        "confidence": 70
+    },
+    {
+        "category": "جاذبه",
+        "name": "غار خربس قشم",
+        "description": null,
+        "address": null,
+        "location": {
+            "latitude": 26.6167,
+            "longitude": 55.8833
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "غار خربس قشم",
+        "confidence": 70
+    },
+    {
+        "category": "جاذبه",
+        "name": "روستای شیب دراز",
+        "description": null,
+        "address": null,
+        "location": {
+            "latitude": 26.6667,
+            "longitude": 55.9167
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "روستای شیب دراز",
+        "confidence": 70
+    },
+    {
+        "category": "جاذبه",
+        "name": "پارک کررو",
+        "description": null,
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "پارک کررو",
+        "confidence": 70
+    },
+    {
+        "category": "جاذبه",
+        "name": "تنگه کریان",
+        "description": null,
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "تنگه کریان",
+        "confidence": 70
+    },
+    {
+        "category": "جاذبه",
+        "name": "پارک کروکودیل قشم",
+        "description": null,
+        "address": null,
+        "location": {
+            "latitude": 26.8333,
+            "longitude": 55.5333
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "پارک کروکودیل قشم",
+        "confidence": 70
+    },
+    {
+        "category": "جاذبه",
+        "name": "باغ موزه گیاه‌شناسی قشم",
+        "description": null,
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "باغ موزه گیاه‌شناسی قشم",
+        "confidence": 70
+    },
+    {
+        "category": "رویداد",
+        "name": "جشن نخل و خرما",
+        "description": "جشن نخل و خرما از شادترین جشنواره‌های مردم قشم است که در آن باغداران انواع خرماها و فراورده‌های آن را نمایش می‌دهند. مردم فرصت دیدن تنوع خرماها و خرید محصولات خرمایی مثل شیره، سرکه، نان، بیسکوییت، رولت و مربا را دارند. صنایع‌دستی مثل زنبیل، سبد، دمپایی و جارو از لیفه و چوب خرما ساخته می‌شوند.",
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "جشن نخل و خرما از شادترین و شورانگیزترین جشنواره‌های مردم قشم است",
+        "confidence": 80
+    },
+    {
+        "category": "رویداد",
+        "name": "مراسم زار",
+        "description": "مردم بومی قشم اعتقاد دارند که آدم‌ها وقتی بیمار می‌شوند که بادهای زار به آن‌ها برخورد کنند و اجنه به تنشان نفوذ کنند. ماما زار یا بابا زار با نواختن دهل و آوازخوانی، جن را از بدن بیمار خارج می‌کند.",
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "مراسم زار",
+        "confidence": 80
+    },
+    {
+        "category": "رویداد",
+        "name": "مراسم قبله دعا",
+        "description": "این مراسم نوعی دعای باران است. وقتی مدت زیادی باران نمی‌بارد، مردم به بیرون شهر می‌روند و با پختن غذا و پخش آن در میان فقرا و پرندگان و حیوانات از خدا طلب باران می‌کنند.",
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "مراسم قبله دعا",
+        "confidence": 80
+    },
+    {
+        "category": "رویداد",
+        "name": "مولودی‌خوانی",
+        "description": "مولودی مدح و قصائدی است که مردم در وصف حضرت محمد (ص) می‌خوانند. در مراسم عروسی، عیدها و دعاخوانی مساجد رایج است. اکثر اهالی قشم اهل تسنن هستند؛ بنابراین مولودی‌خوانی روز میلاد حضرت رسول و عید فطر با آداب بیشتری انجام می‌شود.",
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "مولودی‌خوانی",
+        "confidence": 80
+    },
+    {
+        "category": "رویداد",
+        "name": "نوروز صیاد",
+        "description": "روستاییان قشم، اول مرداد هر سال را با نام نوروز صیاد می‌شناسند. در این روز صید انجام نمی‌شود و کسی ماهی نمی‌خورد. همه به دریا می‌روند و سر و تن خود را با آب دریا می‌شویند تا از بیماری در امان باشند. لوبن فردی است که برای سلامتی احشام و مزارع دعا می‌خواند.",
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": "اول مرداد",
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "نوروز صیاد",
+        "confidence": 80
+    },
+    {
+        "category": "رویداد",
+        "name": "جشنواره میگو",
+        "description": "در ۲۴ و ۲۵ آبان هر سال در قشم جشن میگو برگزار می‌شود. بیشترین میگوی منطقه در قشم صید می‌شود. جشنی به شکرانه این نعمت برپا می‌شود و غرفه‌های صنایع دستی هم فعالیت می‌کنند.",
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": "۲۴ و ۲۵ آبان",
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "جشنواره میگو",
+        "confidence": 80
+    },
+    {
+        "category": "رستوران",
+        "name": "رستوران شب‌های طلایی",
+        "description": null,
+        "address": "قشم، ساحلی جنوبی، نرسیده به بلوار مشاهیر، پارک زیتون",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "لوکس",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "09363974103",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "رستوران شب‌های طلایی",
+        "confidence": 85
+    },
+    {
+        "category": "رستوران",
+        "name": "رستوران بادیل",
+        "description": null,
+        "address": "جزیره قشم، نخل زرین، خیابان پیام، روبروی برج های دوقلوی آپادانا",
+        "location": {
+            "latitude": 26.9333,
+            "longitude": 56.25
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "لوکس",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "07635242550",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "رستوران بادیل",
+        "confidence": 85
+    },
+    {
+        "category": "رستوران",
+        "name": "رستوران سنتی ناخدا امینی",
+        "description": null,
+        "address": "جزیره قشم ، روستای طبل ، روستای طبل، جنب مسجد اصلاح",
+        "location": {
+            "latitude": 26.7833,
+            "longitude": 55.6667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "متوسط",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "09177677601",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "رستوران سنتی ناخدا امینی",
+        "confidence": 85
+    },
+    {
+        "category": "رستوران",
+        "name": "رستوران خوان بوم",
+        "description": null,
+        "address": "جزیره قشم، بلوار امام قلی، خیابان خلیج فارس، روبروی درب جنوبی مجتمع تجاری ستاره، همکف هتل مارینا ۲، مجموعه رستوران های خوان بوم",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "لوکس",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "۰۷۶۳۵۲۴۱۳۱۳",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "رستوران خوان بوم",
+        "confidence": 85
+    },
+    {
+        "category": "رستوران",
+        "name": "رستوران سی‌رول",
+        "description": null,
+        "address": "جزیره قشم، خیابان دانش، حد فاصل چهار راه رسالت و میدان شهدا",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "اقتصادی",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "09172993136",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "رستوران سی‌رول",
+        "confidence": 85
+    },
+    {
+        "category": "رستوران",
+        "name": "رستوران لبنانی فطائر",
+        "description": null,
+        "address": "جزیره قشم، چهار راه رسالت، داخل خیابان دانش",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "اقتصادی",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "۰۷۶۳۵۲۲۵۵۰۰",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "رستوران لبنانی فطائر",
+        "confidence": 85
+    },
+    {
+        "category": "رستوران",
+        "name": "رستوران قلعه",
+        "description": null,
+        "address": "جزیره قشم، میدان ولایت، جنب قلعه پرتغالی‌ها",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "لوکس",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "۰۷۶۳۵۲۲۴۷۶۵",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "رستوران قلعه",
+        "confidence": 85
+    },
+    {
+        "category": "رستوران",
+        "name": "رستوران نعیم",
+        "description": null,
+        "address": "جزیره قشم، میدان امامقلی خان، جنب شهرک ساحلی، طبقه همکف، پلاک ۹۸۵",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "اقتصادی",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "۰76۳۵۲۴۲۴۹۴",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "رستوران نعیم",
+        "confidence": 85
+    },
+    {
+        "category": "رستوران",
+        "name": "رستوران حاج غفور",
+        "description": null,
+        "address": "جزیره قشم، بلوار خلیج فارس شرقی، جنب مسجد شیخ حاجی رمضان",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "متوسط",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "رستوران حاج غفور",
+        "confidence": 85
+    },
+    {
+        "category": "رستوران",
+        "name": "رستوران خاله",
+        "description": null,
+        "address": "جزیره قشم، جنب قلعه پرتقالی ها به سمت اتوبان، رستوران و فست فود سنتی خاله",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "لوکس",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "۰۷۶۳۵۲۲۵۶۱۱",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "رستوران خاله",
+        "confidence": 85
+    },
+    {
+        "category": "رستوران",
+        "name": "رستوران سنتی شب‌های دفاری",
+        "description": null,
+        "address": "جزیره قشم، بعد از شهرک گلزار، روستای دفاری، جنب مسجد جامع، رستوران شب‌های دفاری",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "لوکس",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "۰۹۱۷۱۹۹۹۹۳۶",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "رستوران سنتی شب‌های دفاری",
+        "confidence": 85
+    },
+    {
+        "category": "رستوران",
+        "name": "رستوران آبشار",
+        "description": null,
+        "address": "شعبه 1: جزیره قشم، میدان شهدای گمنام، روبروی مرکز خرید مرجان\nشعبه 2: جزیره قشم، بلوار ولیعصر، بالاتر از میدان گل‌ها، روبروی مرکز خرید خلیج فارس",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "لوکس",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "۰۷۶۳۵۲۴۷۱۳۸",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "رستوران آبشار",
+        "confidence": 85
+    },
+    {
+        "category": "رستوران",
+        "name": "رستوران دریا",
+        "description": null,
+        "address": "جزیره قشم، شهر درگهان، مجتمع تجاری دریا، رستوران مجلل دریا",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "لوکس",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "07635273590",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "رستوران دریا",
+        "confidence": 85
+    },
+    {
+        "category": "رستوران",
+        "name": "رستوران الوند",
+        "description": null,
+        "address": "جزیره قشم، بلوار آزادگان، جنوب غربی میدان شهدا، نبش خیابان الهیه، هتل الوند قشم",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "لوکس",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "۰۷۶۳۵۲۲۳۰۰۷",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "رستوران الوند",
+        "confidence": 85
+    },
+    {
+        "category": "رستوران",
+        "name": "رستوران امیران",
+        "description": null,
+        "address": "جزیره قشم، مجتمع سیتی سنتر۱، طبقه دوم، رستوران امیران",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "لوکس",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "۰۷۶۳۵۲۴۶۹۴۰",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "رستوران امیران",
+        "confidence": 85
+    },
+    {
+        "category": "هتل",
+        "name": "هتل آراکتا",
+        "description": null,
+        "address": "جزیره قشم، شهرک سام و زال، سام و زال غربی، هتل آراکتا قشم",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "از ۵.۰۰۰.۰۰۰ تومان تا ۱۳.۰۰۰.۰۰۰ تومان",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "هتل آراکتا",
+        "confidence": 85
+    },
+    {
+        "category": "هتل",
+        "name": "هتل آوینا",
+        "description": null,
+        "address": "جزیره قشم، بلوار باهنر",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "از ۳.۰۰۰.۰۰۰ تومان تا ۵.۲۰۰.۰۰۰ تومان",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "هتل آوینا",
+        "confidence": 85
+    },
+    {
+        "category": "هتل",
+        "name": "هتل آتامان",
+        "description": null,
+        "address": "جزیره قشم، میدان حافظ، به سمت میدان امام قلی خان، بلوار گلستان",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "از ۳.۳۰۰.۰۰۰ تومان تا ۷.۵۰۰.۰۰۰ تومان",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "هتل آتامان",
+        "confidence": 85
+    },
+    {
+        "category": "هتل",
+        "name": "هتل آرتا",
+        "description": null,
+        "address": "جزیره قشم، بلوار شهید بهشتی، رو به روی منازل مسکونی علی بن ابی طالب",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "از ۲.۰۰۰.۰۰۰ تومان تا ۵.۰۰۰.۰۰۰ تومان",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "هتل آرتا",
+        "confidence": 85
+    },
+    {
+        "category": "هتل",
+        "name": "هتل ساحلی خلیج فارس",
+        "description": null,
+        "address": "جزیره قشم، میدان علم و صنعت",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "از ۹۰۰.۰۰۰ تومان تا ۱.۷۵۰.۰۰۰ تومان",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "هتل ساحلی خلیج فارس",
+        "confidence": 85
+    },
+    {
+        "category": "هتل",
+        "name": "هتل سینگو",
+        "description": null,
+        "address": "جزیره قشم، شهر درگهان، مجتمع تجاری دریا",
+        "location": {
+            "latitude": 26.95,
+            "longitude": 56.2667
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "از ۱.۶۵۰.۰۰۰ تومان تا ۵.۰۵۰.۰۰۰ تومان",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "هتل سینگو",
+        "confidence": 85
+    },
+    {
+        "category": "هتل",
+        "name": "اقامتگاه بومگردی جووا",
+        "description": "اقامتگاه بومگردی در روستای سهیلی",
+        "address": "قشم، روستای سهیلی، جنب مسجد جامع",
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "۵.۰۰۰.۰۰۰ تومان",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "اقامتگاه بومگردی جووا",
+        "confidence": 90
+    },
+    {
+        "category": "هتل",
+        "name": "اقامتگاه بومگردی صفاآباد",
+        "description": "اقامتگاه بومگردی در بلوار باهنر",
+        "address": "جزیره قشم، بلوار باهنر",
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "از ۱.۱۵۵.۰۰۰ تومان تا ۷.۵۰۰.۰۰۰ تومان",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "اقامتگاه بومگردی صفاآباد",
+        "confidence": 90
+    },
+    {
+        "category": "هتل",
+        "name": "اقامتگاه بومگردی کاهور",
+        "description": "اقامتگاه بومگردی در روستای طبل",
+        "address": "قشم، روستای طبل",
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "۱.۶۰۰.۰۰۰ تومان",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "اقامتگاه بومگردی کاهور",
+        "confidence": 90
+    },
+    {
+        "category": "هتل",
+        "name": "اقامتگاه بومگردی خانه مانگرو",
+        "description": "اقامتگاه بومگردی در دهستان صلخ",
+        "address": "قشم، دهستان صلخ، بخش حرا، شمال روستای دهخدا",
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "از ۱.۳۰۰.۰۰۰ تومان تا ۱.۷۰۰.۰۰۰ تومان",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "اقامتگاه بومگردی خانه مانگرو",
+        "confidence": 90
+    },
+    {
+        "category": "هتل",
+        "name": "اقامتگاه بومگردی هفت رنگو",
+        "description": "اقامتگاه بومگردی در جاده هفت رنگو",
+        "address": "قشم، جاده هفت رنگو، ابتدای ورودی روستای هفت رنگو",
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": "از ۱.۲۰۰.۰۰۰ تومان تا ۳.۴۰۰.۰۰۰ تومان",
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "اقامتگاه بومگردی هفت رنگو",
+        "confidence": 90
+    },
+    {
+        "category": "خرید",
+        "name": "مرکز خرید سیتی سنتر ۱ و ۲ قشم",
+        "description": "لوکس‌ترین مرکز خرید قشم با امکانات تفریحی شامل شهربازی، سینما، کافه و رستوران. بهترین برای خرید پوشاک برند ایران و جهان.",
+        "address": "جزیره قشم، خیابان ولیعصر، خیابان دریا، پایین‌تر از میدان امام قلی‌خان",
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": "برای کودکان کالسکه حمل کودک کرایه دهید.",
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "مراکز سیتی سنتر یک و دو قشم دقیقاً روبه‌روی هم و در دو طرف یک خیابان قرار دارند.",
+        "confidence": 90
+    },
+    {
+        "category": "خرید",
+        "name": "مرکز خرید پردیس",
+        "description": "مجتمع پردیس با ۴ طبقه، امکانات رفاهی مثل رستوران، کافه و هتل. معروف به کیف و کفش‌های باکیفیت و لباس شب‌های زیبا.",
+        "address": "جزیره قشم، بلوار ولیعصر، چهارراه پردیس",
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "مجتمع پردیس با ۴ طبقه وسعت فضا روبه‌روی بازار ستاره قشم قرار دارد.",
+        "confidence": 90
+    },
+    {
+        "category": "خرید",
+        "name": "مرکز خرید سیمرغ",
+        "description": "یکی از لوکس‌ترین بازارهای قشم با امکانات رفاهی مثل رستوران و کافه لاکچری، معماری مدرن، سالن بیلیارد.",
+        "address": "جزیره قشم، بلوار ولیعصر قشم، میدان امام قلی خان",
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "پاساژ سیمرغ یکی از لوکس‌ترین بازارهای قشم است",
+        "confidence": 90
+    },
+    {
+        "category": "خرید",
+        "name": "الماس مال قشم",
+        "description": "پاساژ لوکس با امکانات مثل پیست دوچرخه‌سواری، سینما، رستوران گردان، آب‌نمای موزیکال. ۱۳ طبقه با واحدهای تجاری متنوع.",
+        "address": "جزیره قشم، بلوار ولیعصر قشم، جنب خیابان ۲۲ بهمن",
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "با یکی از پاساژهای لوکس و لاکچری جزیره قشم طرف هستید.",
+        "confidence": 90
+    },
+    {
+        "category": "خرید",
+        "name": "مجتمع تجاری نور و دودلفین درگهان",
+        "description": "مجتمع تجاری نور روبه‌روی مرکز خرید دو دلفین. برای خرید پوشاک زنانه و مردانه، لوازم آرایشی، کیف و کفش، عطر و لوازم خانگی.",
+        "address": "جزیره قشم، درگهان، روبه‌روی مجتمع تجاری دودلفین",
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "مجتمع تجاری نور روبه‌روی مرکز خرید دو دلفین قشم قرار دارد",
+        "confidence": 90
+    },
+    {
+        "category": "خرید",
+        "name": "بازار فردوسی قشم",
+        "description": "از ارزان‌ترین مراکز خرید قشم، گزینه خوب برای سوغات. ۴ طبقه با بیش از ۴۰۰ واحد فروش، رستوران.",
+        "address": "جزیره قشم، بلوار ولیعصر قشم، میدان امام قلی خان",
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "مرکز خرید فردوسی از ارزان‌ترین مراکز خرید قشم است",
+        "confidence": 90
+    },
+    {
+        "category": "خرید",
+        "name": "بازار خلیج فارس",
+        "description": "مجتمع تجاری مسکونی ۴ طبقه، برای خرید لوازم الکترونیکی مثل لپ‌تاپ، موبایل. رستوران در طبقه چهارم.",
+        "address": "جزیره قشم، میدان گل‌ها قشم، خیابان ولیعصر، نزدیک مرکز خرید ستاره",
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "بازار خلیج فارس یک مجتمع تجاری مسکونی است",
+        "confidence": 90
+    },
+    {
+        "category": "خرید",
+        "name": "مرکز خرید مرجان یا لؤلؤ سنتر قشم",
+        "description": "معروف به غرفه‌های پوشاک و خوراکی ارزان. رستوران‌ها و کافه‌ها برای استراحت.",
+        "address": "جزیره قشم، بلوار ولیعصر، چهارراه پردیس",
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "مرکز خرید مرجان یا لؤلؤ سنتر قشم را وجود دو غرفه پوشاک و خوراکی‌هایش معروف کرده است.",
+        "confidence": 90
+    },
+    {
+        "category": "حمل‌ونقل",
+        "name": "تاکسی های قشم",
+        "description": "تاکسی‌های تلفنی و بی‌سیم ۲۴ساعته. شماره ۱۸۰۰ یا ۱۸۲۸. تاکسی‌های اینترنتی مثل اسنپ.",
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "1800",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "برای استفاده از تاکسی بی‌سیم جزیره قشم با شماره تلفن ۱۸۰۰ یا ۱۸۲۸ تماس بگیرید",
+        "confidence": 80
+    },
+    {
+        "category": "حمل‌ونقل",
+        "name": "اجاره ماشین در قشم",
+        "description": "اجاره خودروهای سواری، ون، مینی‌بوس با یا بدون راننده. شرکت‌هایی مثل سعادت رنت.",
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": "از اهالی بومی درباره شرکت‌های مطمئن بپرسید.",
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "شرکت‌های معتبر رنت خودرو در قشم",
+        "confidence": 80
+    },
+    {
+        "category": "تفریح",
+        "name": "تورهای تفریحی در قشم",
+        "description": "تورهای گردش در جزیره برای بازدید از جاذبه‌ها، رستوران‌ها و مراکز خرید. از دفترهای مجاز گردشگری.",
+        "address": null,
+        "location": {
+            "latitude": null,
+            "longitude": null
+        },
+        "best_time_to_visit": null,
+        "approx_cost": null,
+        "duration_recommended": null,
+        "local_tips": null,
+        "contact": {
+            "phone": "",
+            "website": "",
+            "instagram": "",
+            "google_maps": ""
+        },
+        "source": "blog.rahbal.com",
+        "raw_excerpt": "تور گردش در جزیره بخرید",
+        "confidence": 80
+    }
+]
