@@ -4,18 +4,18 @@ services:
   # ==============================
   # 🧠 Qeshm AI Backend (FastAPI)
   # ==============================
-  backend:
-    build: .
-    container_name: qeshm-ai-backend
-    working_dir: /app
-    volumes:
-      - ./:/app
-      - ./qeshm_db:/app/qeshm_db
-    env_file:
-      - .env
-    ports:
-      - "8001:8001"
-    restart: unless-stopped
+  # backend:
+  #   build: .
+  #   container_name: qeshm-ai-backend
+  #   working_dir: /app
+  #   volumes:
+  #     - ./:/app
+  #     - ./qeshm_db:/app/qeshm_db
+  #   env_file:
+  #     - .env
+  #   ports:
+  #     - "8001:8001"
+  #   restart: unless-stopped
 
   # ==============================
   # 💬 OpenWebUI Frontend
@@ -89,7 +89,16 @@ services:
     extra_hosts: 
       - "host.docker.internal:host-gateway"
 
+  pipelines:
+      image: ghcr.io/open-webui/pipelines:main
+      volumes:
+        - pipelines:/app/pipelines
+      restart: always
+      environment:
+        - PIPELINES_API_KEY=0p3n-w3bu!
+
 volumes:
   openwebui_data:
+  pipelines:
   # qeshm_db:
 

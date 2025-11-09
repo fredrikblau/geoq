@@ -332,21 +332,29 @@ def build_context_from_docs(docs, max_chars: int = MAX_CONTEXT_CHARS) -> str:
 # UPDATE: google_search_summary (history-aware)
 # -------------------------------
 def google_search_summary(
-    query: str, history_summary: str = "", full_history: List = None
+    query: str,
+    history_summary: str = "",
+    full_history: List = None,
+    rag_context: str = "",
 ) -> str:
-    # Summarize history if provided (last 3 user msgs for brevity)
     hist_context = ""
     if full_history:
         recent_user = [
             m.content for m in full_history[-6:] if isinstance(m, HumanMessage)
-        ]  # Last 3 exchanges
-        hist_context = (
-            f"متن مکالمه اخیر: {' | '.join(recent_user[-3:])}"  # Short concat
+        ]
+        hist_context = f"متن مکالمه اخیر: {' | '.join(recent_user[-3:])}"
+
+    # NEW: Low-conf RAG injection
+    rag_prompt = ""
+    if rag_context:
+        rag_prompt = (
+            f"\nاطلاعات محلی کم اطمینان (برای تایید استفاده کن): {rag_context}\n"
         )
 
     system = (
         f"You are a web search assistant focusing on Qeshm Island, Iran. "
-        f"Prioritize local sources. Use this context: {hist_context}\n"
+        f"Prioritize local sources. Use this context: {hist_context}{rag_prompt}"
+        f"اگر از جستجو استفاده کردی، در پاسخ بگو 'اطلاعات محلی مطمئن نبود، پس جستجو کردم'."
         f"Return concise Persian summary (3-4 sentences) + 2-4 sources as bullets."
     )
     human = f"Search and summarize (in Persian) focusing on Qeshm: {query}"
@@ -354,7 +362,7 @@ def google_search_summary(
         resp = llm.invoke(f"{system}\n\n{human}", tools=[{"google_search": {}}])
         return resp.content
     except Exception as e:
-        logger.error("Google/Gemini search failed: %s", e)
+        logger.exception("Google/Gemini search failed: %s", e)
         raise
 
 
@@ -486,6 +494,11 @@ async def chat_completions(req: ChatRequest):
     context = ""
     rag_fallback_reason = ""
     hist_summary = ""
+
+    docs = []
+    context = ""
+    rag_fallback_reason = ""
+    rag_context_low = ""  # NEW: for low-conf pass to Google
     if len(history.messages) > 1:
         recent_user = [
             m.content for m in history.messages[-4:-1] if isinstance(m, HumanMessage)
@@ -496,58 +509,53 @@ async def chat_completions(req: ChatRequest):
     if route == "rag":
         try:
             raw_docs = retriever.invoke(user_input)
-            if not raw_docs:
-                rag_fallback_reason = "no_docs_retrieved"
-                raise ValueError("Empty retrieval")
+            if raw_docs:
+                for d in raw_docs:
+                    d.page_content = normalize_farsi(d.page_content)
 
-            for d in raw_docs:
-                d.page_content = normalize_farsi(d.page_content)
+                reranked = rerank_docs(user_input, raw_docs, top_k=6)
+                docs = [d for d, s in reranked]
 
-            reranked = rerank_docs(user_input, raw_docs, top_k=6)
-            docs = [d for d, s in reranked]
+                rerank_best = reranked[0][1] if reranked else 0.0
+                scored = vector_db.similarity_search_with_score(user_input, k=3)
+                best_sim = min([s for _, s in scored]) if scored else 999
 
-            rerank_best = reranked[0][1] if reranked else 0.0
-            logger.info(f"RAG: Retrieved: {rerank_best}")
-            scored = vector_db.similarity_search_with_score(user_input, k=3)
-            best_sim = min([s for _, s in scored]) if scored else 999
+                rag_confident = rerank_best > 0.05 and best_sim < 0.7 and len(docs) >= 1
 
-            rag_confident = (
-                rerank_best > 0.05  # LOWERED for Persian/short docs
-                and best_sim
-                < 0.7  # RELAXED sim (E5-large scale ~0-1, but Chroma cosine ~0-1 too)
-                and len(docs) >= 1
-            )
+                if rag_confident:
+                    context = build_context_from_docs(docs, max_chars=MAX_CONTEXT_CHARS)
+                    logger.info(
+                        f"RAG confident: rerank={rerank_best:.3f} | sim={best_sim:.3f}"
+                    )
+                else:
+                    # NEW: Build low-conf context (top 3, short)
+                    low_docs = docs[:3] if docs else raw_docs[:3]
+                    rag_context_low = build_context_from_docs(
+                        low_docs, max_chars=1500
+                    )  # Shorter
+                    rag_fallback_reason = f"low_conf (rerank={rerank_best:.3f})"
+                    logger.info(f"RAG low-conf: using partial context for Google")
 
-            if rag_confident:
-                context = build_context_from_docs(docs, max_chars=MAX_CONTEXT_CHARS)
-                logger.info(
-                    f"RAG confident: rerank={rerank_best:.3f} | sim={best_sim:.3f} | docs={len(docs)}"
-                )
             else:
-                rag_fallback_reason = (
-                    f"low_confidence (rerank={rerank_best:.3f}, sim={best_sim:.3f})"
-                )
-                logger.info(f"RAG fallback: {rag_fallback_reason}")
-                route = "google"
+                rag_fallback_reason = "no_docs"
+                logger.info("RAG no docs → Google")
 
         except Exception as e:
             rag_fallback_reason = f"exception: {str(e)[:50]}"
             logger.exception("RAG failed: %s", e)
-            route = "google"
 
     # === GOOGLE WITH HISTORY ===
-    if route == "google":
+    if not context:  # Instead of route == "google"
         try:
-            # Pass history for context-aware search
             google_answer = google_search_summary(
                 query=user_input,
                 history_summary=f"{memory_text} | {hist_summary}",
                 full_history=history.messages,
+                rag_context=rag_context_low,  # NEW: Pass low-conf
             )
-
-            # Add to history for continuity
             history.add_message(AIMessage(content=google_answer))
-            simple_summarize_memory(session_id, history)
+            save_session_history(session_id, history)  # If Redis
+            logger.info(f"Google used: reason='{rag_fallback_reason}'")
 
             logger.info(
                 f"Google fallback used: reason='{rag_fallback_reason}' | hist_context_len={len(history.messages)}"
@@ -582,7 +590,7 @@ async def chat_completions(req: ChatRequest):
                 "id": f"chatcmpl-{int(time.time())}",
                 "object": "chat.completion",
                 "created": int(time.time()),
-                "model": "gemini-2.5-flash",
+                "model": "GEOQ",
                 "choices": [
                     {
                         "index": 0,
@@ -644,7 +652,7 @@ async def chat_completions(req: ChatRequest):
             "id": f"chatcmpl-{int(time.time())}",
             "object": "chat.completion",
             "created": int(time.time()),
-            "model": "gemini-2.5-flash",
+            "model": "GEOQ",
             "choices": [
                 {
                     "index": 0,
@@ -658,7 +666,7 @@ async def chat_completions(req: ChatRequest):
 
 @app.get("/health")
 async def health():
-    return {"status": "ok", "model": "gemini-2.5-flash", "embeddings": EMBED_MODEL}
+    return {"status": "ok", "model": "GEOQ", "embeddings": EMBED_MODEL}
 
 
 @app.get("/v1/models")
@@ -667,7 +675,7 @@ async def list_models():
         "object": "list",
         "data": [
             {
-                "id": "gemini-2.5-flash",
+                "id": "GEOQ",
                 "object": "model",
                 "created": 1677610602,
                 "owned_by": "qeshm-ai",
