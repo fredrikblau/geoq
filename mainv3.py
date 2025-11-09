@@ -39,6 +39,7 @@ from langchain_core.messages import HumanMessage, AIMessage
 from langchain_core.runnables import RunnableWithMessageHistory
 from langchain_community.chat_message_histories import ChatMessageHistory
 
+
 # Reranker
 try:
     from transformers import AutoTokenizer, AutoModelForSequenceClassification
@@ -53,6 +54,21 @@ except Exception:
 # -------------------------------
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("qeshm-ai")
+
+import logging
+from pythonjsonlogger.jsonlogger import JsonFormatter
+
+# Logging
+logger = logging.getLogger("qeshm-ai")
+logger.setLevel(logging.DEBUG)  # Or INFO for prod
+
+# JSON handler
+json_handler = logging.StreamHandler()
+formatter = JsonFormatter(
+    "%(asctime)s %(name)s %(levelname)s %(message)s %(module)s %(funcName)s %(lineno)d"
+)
+json_handler.setFormatter(formatter)
+logger.addHandler(json_handler)
 
 import redis
 from typing import Dict, Any
@@ -69,6 +85,7 @@ except Exception as e:
 
 # In-memory fallback
 store: Dict[str, ChatMessageHistory] = {}
+
 
 # -------------------------------
 # Load environment
@@ -307,6 +324,9 @@ def rerank_docs(query: str, docs: List, top_k: int = 5):
 
     ranked_idx = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)
     ranked = [(docs[i], scores[i]) for i in ranked_idx[:top_k]]
+    logger.debug(
+        "Reranked docs", extra={"scores": scores, "top_k": len(ranked), "query": query}
+    )
     return ranked
 
 
@@ -325,6 +345,14 @@ def build_context_from_docs(docs, max_chars: int = MAX_CONTEXT_CHARS) -> str:
             break
         parts.append(part)
         total += len(part)
+    logger.info(
+        "Built RAG context",
+        extra={
+            "doc_count": len(docs),
+            "total_chars": total,
+            "context": "\n\n".join(parts),
+        },
+    )
     return "\n\n".join(parts)
 
 
@@ -360,6 +388,16 @@ def google_search_summary(
     human = f"Search and summarize (in Persian) focusing on Qeshm: {query}"
     try:
         resp = llm.invoke(f"{system}\n\n{human}", tools=[{"google_search": {}}])
+        logger.info(
+            "Google search executed",
+            extra={
+                "query": query,
+                "history_summary": history_summary,
+                "rag_context": rag_context,
+                "input": f"{system}\n\n{human}",
+                "output": resp.content,
+            },
+        )
         return resp.content
     except Exception as e:
         logger.exception("Google/Gemini search failed: %s", e)
@@ -378,6 +416,13 @@ chain_with_history = RunnableWithMessageHistory(
 def improved_route(query: str, memory: str) -> str:
     q = normalize_farsi(query).lower()
     mem = normalize_farsi(memory).lower() if memory else ""
+    clf_prompt = f"Classify query for Qeshm AI: '{query}' with memory '{mem}'. Output: 'rag' for local info, 'google' for fresh/search, 'chat' for casual."
+    route = llm.invoke(clf_prompt).content.strip().lower()
+    logger.info(
+        "Routing decision",
+        extra={"route": route, "query": query, "memory": memory, "route": route},
+    )
+    return route
 
     # Strong heuristics: exact triggers first
     google_triggers = [
@@ -442,9 +487,6 @@ def get_last_user_question(history: ChatMessageHistory) -> Optional[str]:
 from fastapi.responses import StreamingResponse
 
 
-# -------------------------------
-# UPDATE: chat_completions endpoint (bullet-proof version)
-# -------------------------------
 @app.post("/v1/chat/completions")
 async def chat_completions(req: ChatRequest):
     if not req.messages:
@@ -561,6 +603,7 @@ async def chat_completions(req: ChatRequest):
                 f"Google fallback used: reason='{rag_fallback_reason}' | hist_context_len={len(history.messages)}"
             )
 
+            # Google doesn't stream - return full
             return {
                 "id": f"chatcmpl-{int(time.time())}",
                 "object": "chat.completion",
@@ -605,7 +648,7 @@ async def chat_completions(req: ChatRequest):
                 },
             }
 
-    # === GENERATION WITH HISTORY (your proven pattern) ===
+    # === GENERATION WITH HISTORY ===
     final_input = f"""
 {context if context else ''}
 
@@ -613,55 +656,156 @@ async def chat_completions(req: ChatRequest):
 
 سوال کاربر: {user_input}
 """.strip()
-
+    logger.debug(
+        "LLM input",
+        extra={
+            "final_input": final_input,
+            "memory_text": memory_text,
+            "session_id": session_id,
+        },
+    )
     try:
-        response = chain_with_history.invoke(
-            {"input": final_input, "memory": memory_text},
-            config={"configurable": {"session_id": session_id}},
-        )
-        assistant_text = response.content
+        cmpl_id = f"chatcmpl-{int(time.time())}"
+        created = int(time.time())
 
-        # Always add response to history
-        history.add_message(AIMessage(content=assistant_text))
-        simple_summarize_memory(session_id, history)
+        if req.stream:
 
-        logger.info(
-            f"Generation complete: route={route} | response_len={len(assistant_text)}"
-        )
+            async def stream_generator():
+                full_content = ""
+                try:
+                    for chunk in chain_with_history.stream(
+                        {"input": final_input, "memory": memory_text},
+                        config={"configurable": {"session_id": session_id}},
+                    ):
+                        content_chunk = (
+                            chunk.content if hasattr(chunk, "content") else str(chunk)
+                        )
+                        full_content += content_chunk
+                        delta = {
+                            "id": cmpl_id,
+                            "object": "chat.completion.chunk",
+                            "created": created,
+                            "model": "gemini-2.5-flash",
+                            "choices": [
+                                {
+                                    "index": 0,
+                                    "delta": {"content": content_chunk},
+                                    "finish_reason": None,
+                                }
+                            ],
+                        }
+                        yield f"data: {json.dumps(delta)}\n\n"
 
-        return {
-            "id": f"chatcmpl-{int(time.time())}",
-            "object": "chat.completion",
-            "created": int(time.time()),
-            "model": "gemini-2.5-flash",
-            "choices": [
-                {
-                    "index": 0,
-                    "message": {"role": "assistant", "content": assistant_text},
-                    "finish_reason": "stop",
-                }
-            ],
-            "usage": {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0},
-        }
+                    # Final chunk
+                    yield f"data: {json.dumps({'id': cmpl_id, 'object': 'chat.completion.chunk', 'created': created, 'model': 'gemini-2.5-flash', 'choices': [{'index': 0, 'delta': {}, 'finish_reason': 'stop'}]})}\n\n"
+                    yield "data: [DONE]\n\n"
+
+                except Exception as e:
+                    logger.exception("Stream failed: %s", e)
+                    error_delta = {
+                        "id": cmpl_id,
+                        "object": "chat.completion.chunk",
+                        "created": created,
+                        "model": "gemini-2.5-flash",
+                        "choices": [
+                            {
+                                "index": 0,
+                                "delta": {"content": "ببخشید، مشکلی پیش اومد."},
+                                "finish_reason": "stop",
+                            }
+                        ],
+                    }
+                    yield f"data: {json.dumps(error_delta)}\n\n"
+                    yield "data: [DONE]\n\n"
+                    full_content = "ببخشید، مشکلی پیش اومد."
+
+                # Add to history after stream
+                history.add_message(AIMessage(content=full_content))
+                save_session_history(session_id, history)
+                simple_summarize_memory(session_id, history)
+
+            # After stream_generator loop
+            return StreamingResponse(stream_generator(), media_type="text/event-stream")
+
+        else:
+            # Non-stream: existing invoke
+            response = chain_with_history.invoke(
+                {"input": final_input, "memory": memory_text},
+                config={
+                    "configurable": {"session_id": session_id, "callbacks": [handler]}
+                },
+            )
+            assistant_text = response.content
+
+            # Add response to history
+            history.add_message(AIMessage(content=assistant_text))
+            save_session_history(session_id, history)
+            simple_summarize_memory(session_id, history)
+
+            logger.info(
+                f"Generation complete: route={route} | response_len={len(assistant_text)}"
+            )
+            logger.info(
+                "LLM output",
+                extra={
+                    "response": assistant_text,
+                    "length": len(assistant_text),
+                    "route": route,
+                },
+            )
+            return {
+                "id": cmpl_id,
+                "object": "chat.completion",
+                "created": created,
+                "model": "gemini-2.5-flash",
+                "choices": [
+                    {
+                        "index": 0,
+                        "message": {"role": "assistant", "content": assistant_text},
+                        "finish_reason": "stop",
+                    }
+                ],
+                "usage": {
+                    "prompt_tokens": 0,
+                    "completion_tokens": 0,
+                    "total_tokens": 0,
+                },
+            }
     except Exception as e:
         logger.exception("Generation failed: %s", e)
         # Bullet-proof fallback
         fallback_msg = "ببخشید، مشکلی پیش اومد. می‌تونی سوالت رو دوباره بپرسی؟"
         history.add_message(AIMessage(content=fallback_msg))
-        return {
-            "id": f"chatcmpl-{int(time.time())}",
-            "object": "chat.completion",
-            "created": int(time.time()),
-            "model": "GEOQ",
-            "choices": [
-                {
-                    "index": 0,
-                    "message": {"role": "assistant", "content": fallback_msg},
-                    "finish_reason": "stop",
-                }
-            ],
-            "usage": {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0},
-        }
+        save_session_history(session_id, history)
+        if req.stream:
+
+            async def error_stream():
+                yield f"data: {json.dumps({'id': f'chatcmpl-{int(time.time())}', 'object': 'chat.completion.chunk', 'created': int(time.time()), 'model': 'GEOQ', 'choices': [{'index': 0, 'delta': {'content': fallback_msg}, 'finish_reason': 'stop'}]})}\n\n"
+                yield "data: [DONE]\n\n"
+
+            return StreamingResponse(error_stream(), media_type="text/event-stream")
+        else:
+            logger.error(
+                "Fallback triggered", extra={"reason": str(e), "query": user_input}
+            )
+            return {
+                "id": f"chatcmpl-{int(time.time())}",
+                "object": "chat.completion",
+                "created": int(time.time()),
+                "model": "GEOQ",
+                "choices": [
+                    {
+                        "index": 0,
+                        "message": {"role": "assistant", "content": fallback_msg},
+                        "finish_reason": "stop",
+                    }
+                ],
+                "usage": {
+                    "prompt_tokens": 0,
+                    "completion_tokens": 0,
+                    "total_tokens": 0,
+                },
+            }
 
 
 @app.get("/health")
