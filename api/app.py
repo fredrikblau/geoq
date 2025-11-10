@@ -487,7 +487,7 @@ async def chat_completions(req: ChatRequest):
                 rag_context_low=rag_context_low,
                 fallback_reason=rag_fallback_reason or f"route_was_{route}",
             )
-            return JSONResponse(content=response.dict())
+            return JSONResponse(content=response.model_dump())
 
         # 5. Prepare Final LLM Input & Generate Response
         hist_summary = _build_history_summary(history)

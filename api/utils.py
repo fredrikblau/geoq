@@ -2,6 +2,7 @@ import re
 import json
 import logging
 import torch
+import functools
 from typing import List, Dict, Tuple
 from langchain_community.embeddings import SentenceTransformerEmbeddings
 from langchain_community.vectorstores import Chroma
@@ -32,27 +33,20 @@ logger.setLevel(logging.DEBUG)  # Set to DEBUG to capture all log levels
 logger.propagate = False  # Prevent duplicate logs in root logger
 
 if not logger.handlers:
-    # Use a standard StreamHandler
     stream_handler = logging.StreamHandler()
 
-    # OLD FORMATTER:
-    # formatter = logging.Formatter(
-    #     "%(asctime)s %(name)s %(levelname)s %(message)s [Module: %(module)s | Func: %(funcName)s | Line: %(lineno)d]"
-    # )
+    json_serializer = functools.partial(json.dumps, ensure_ascii=False)
 
-    # --- 2. REPLACE the old formatter with this: ---
-    # NEW JSON FORMATTER:
-    # This formatter will automatically pick up all standard log fields
-    # AND everything you pass in the 'extra' dictionary.
     formatter = jsonlogger.JsonFormatter(
-        "%(asctime)s %(name)s %(levelname)s %(message)s %(module)s %(funcName)s %(lineno)d"
+        "%(asctime)s %(name)s %(levelname)s %(message)s %(module)s %(funcName)s %(lineno)d",
+        json_serializer=json_serializer,
     )
-    # --- End of replacement ---
 
     stream_handler.setFormatter(formatter)
     logger.addHandler(stream_handler)
 
 logger.info("Logging configured")
+
 
 # --- Service Initialization ---
 
