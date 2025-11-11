@@ -14,77 +14,77 @@ services:
       - "8001:8001"
     restart: unless-stopped
 
-  # ==============================
-  # 💬 OpenWebUI Frontend
-  # ==============================
-  openwebui:
-    image: ghcr.io/open-webui/open-webui:main-slim
-    container_name: openwebui
-    ports:
-      - "3000:8080"
-    env_file:
-      - .env
-    environment:
-      # --- API connection (to your backend)
-      OPENAI_API_BASE_URL: http://backend:8001/v1
-      OPENAI_API_KEY: dummy
-      OFFLINE_MODE: "True"
-      # WEBUI_AUTH: "False"
-      ENABLE_OLLAMA_API: "False"
+  # # ==============================
+  # # 💬 OpenWebUI Frontend
+  # # ==============================
+  # openwebui:
+  #   image: ghcr.io/open-webui/open-webui:main-slim
+  #   container_name: openwebui
+  #   ports:
+  #     - "3000:8080"
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     # --- API connection (to your backend)
+  #     OPENAI_API_BASE_URL: http://backend:8001/v1
+  #     OPENAI_API_KEY: dummy
+  #     OFFLINE_MODE: "True"
+  #     # WEBUI_AUTH: "False"
+  #     ENABLE_OLLAMA_API: "False"
 
-      # --- Disable external providers
-      DISABLE_OLLAMA: "true"
-      DISABLE_OPENAI: "true"
-      DISABLE_ANTHROPIC: "true"
-      DISABLE_GOOGLE: "true"
-      DISABLE_GROQ: "true"
-      DISABLE_XAI: "true"
-      DISABLE_COHERE: "true"
-      DISABLE_HUGGINGFACE: "true"
-      DISABLE_MISTRAL: "true"
-      DISABLE_DEEPSEEK: "true"
+  #     # --- Disable external providers
+  #     DISABLE_OLLAMA: "true"
+  #     DISABLE_OPENAI: "true"
+  #     DISABLE_ANTHROPIC: "true"
+  #     DISABLE_GOOGLE: "true"
+  #     DISABLE_GROQ: "true"
+  #     DISABLE_XAI: "true"
+  #     DISABLE_COHERE: "true"
+  #     DISABLE_HUGGINGFACE: "true"
+  #     DISABLE_MISTRAL: "true"
+  #     DISABLE_DEEPSEEK: "true"
 
-      # --- Disable agent/smart suggestion features
-      DISABLE_SMART_SUGGESTIONS: "true"
-      DISABLE_FOLLOWUP_SUGGESTIONS: "true"
-      DISABLE_AGENT_MODE: "true"
-      DISABLE_AUTO_SYSTEM_PROMPT: "true"
-      DISABLE_ENHANCED_SYSTEM_PROMPT: "true"
-      DISABLE_PROMPT_TUNING: "true"
-      DISABLE_RAG: "true"
-      DISABLE_KNOWLEDGE_FEATURE: "true"
+  #     # --- Disable agent/smart suggestion features
+  #     DISABLE_SMART_SUGGESTIONS: "true"
+  #     DISABLE_FOLLOWUP_SUGGESTIONS: "true"
+  #     DISABLE_AGENT_MODE: "true"
+  #     DISABLE_AUTO_SYSTEM_PROMPT: "true"
+  #     DISABLE_ENHANCED_SYSTEM_PROMPT: "true"
+  #     DISABLE_PROMPT_TUNING: "true"
+  #     DISABLE_RAG: "true"
+  #     DISABLE_KNOWLEDGE_FEATURE: "true"
 
-      # --- UI simplification
-      HIDE_MODEL_SELECTOR: "true"
-      DISABLE_MODEL_MANAGEMENT: "true"
-      DISABLE_MODEL_SELECTOR: "true"
+  #     # --- UI simplification
+  #     HIDE_MODEL_SELECTOR: "true"
+  #     DISABLE_MODEL_MANAGEMENT: "true"
+  #     DISABLE_MODEL_SELECTOR: "true"
 
-      # --- Persian Language / RTL mode
-      APP_LANG: fa
-      RTL: "true"
+  #     # --- Persian Language / RTL mode
+  #     APP_LANG: fa
+  #     RTL: "true"
 
-      # --- Chat / Memory
-      ENABLE_MESSAGE_HISTORY: "true"
-      MESSAGE_HISTORY_LIMIT: "50"
+  #     # --- Chat / Memory
+  #     ENABLE_MESSAGE_HISTORY: "true"
+  #     MESSAGE_HISTORY_LIMIT: "50"
 
-      # --- Auth (optional)
-      ENABLE_AUTH: "false"
+  #     # --- Auth (optional)
+  #     ENABLE_AUTH: "false"
 
-      # --- Logging
-      # LOG_LEVEL: info
+  #     # --- Logging
+  #     # LOG_LEVEL: info
 
-      DISABLE_EMBEDDINGS: "true"
-      RAG_EMBEDDING_MODEL: ""
+  #     DISABLE_EMBEDDINGS: "true"
+  #     RAG_EMBEDDING_MODEL: ""
 
-      ENABLE_PERSISTENT_CONFIG: "False"
+  #     ENABLE_PERSISTENT_CONFIG: "False"
 
-    volumes:
-      - openwebui_data:/app/backend/data
-    # depends_on:
-    #   - backend
-    restart: unless-stopped
-    extra_hosts: 
-      - "host.docker.internal:host-gateway"
+  #   volumes:
+  #     - openwebui_data:/app/backend/data
+  #   # depends_on:
+  #   #   - backend
+  #   restart: unless-stopped
+  #   extra_hosts: 
+  #     - "host.docker.internal:host-gateway"
 
 volumes:
   openwebui_data:
