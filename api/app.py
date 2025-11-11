@@ -19,10 +19,10 @@ from utils import (
     rerank_docs,
     build_context_from_docs,
     google_search_summary,
-    improved_route,
     vector_db,
     chain_with_history,
     llm_summarize_memory,
+    route_and_refine,
 )
 from config import PORT, MAX_HISTORY_LEN
 
@@ -70,10 +70,10 @@ class ChatCompletionResponse(BaseModel):
 
 def _sync_history(
     messages: List[Message], session_id: str
-) -> Tuple[ChatMessageHistory, str, str]:
+) -> Tuple[ChatMessageHistory, str, str, str]:
     """
     Loads, updates, and saves chat history.
-    Returns the history object, the latest user input, and a generated memory summary.
+    Returns the history object, the latest user input, generated memory summary and route(google|rag|chat).
     """
     user_input = normalize_farsi(messages[-1].content)
     history = get_session_history(session_id)
@@ -125,7 +125,8 @@ def _sync_history(
             "memory": memory_text,
         },
     )
-    return history, user_input, memory_text
+    route, refined_query = route_and_refine(user_input, memory_text, history)
+    return history, refined_query, memory_text, route
 
 
 def _build_history_summary(history: ChatMessageHistory) -> str:
@@ -452,10 +453,11 @@ async def chat_completions(req: ChatRequest):
 
     try:
         # 1. Sync History & Get Memory
-        history, user_input, memory_text = _sync_history(req.messages, session_id)
+        history, user_input, memory_text, route = _sync_history(
+            req.messages, session_id
+        )
 
         # 2. Determine Route
-        route = improved_route(user_input, memory_text)
         logger.info(
             "Routing decision made",
             extra={"session_id": session_id, "route": route, "query": user_input},

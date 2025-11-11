@@ -443,38 +443,66 @@ Always continue naturally from the history—do not repeat or ignore it."""
         raise
 
 
-def improved_route(query: str, memory: str) -> str:
-    """Classifies the user query into 'rag', 'google', or 'chat'."""
+def route_and_refine(
+    query: str, memory: str, history: ChatMessageHistory
+) -> Tuple[str, str]:
+    """Classifies and refines the query in one LLM call with JSON output."""
     q_norm = normalize_farsi(query).lower()
     mem_norm = normalize_farsi(memory).lower() if memory else ""
 
-    # This prompt is a key part of the logic
-    clf_prompt = f"Classify query for Qeshm AI: '{q_norm}' with memory '{mem_norm}' use memory only to classify. Output: 'rag' for local info, 'google' for fresh/search, 'chat' for casual."
+    # Build recent history snippet for refinement (last 4 messages)
+    if len(history.messages) <= 2:
+        hist_snippet = ""  # Skip if short
+    else:
+        recent_msgs = history.messages[-4:]
+        hist_snippet = "\n".join(
+            [
+                f"{'User' if isinstance(m, HumanMessage) else 'AI'}: {m.content}"
+                for m in recent_msgs
+            ]
+        )
 
-    logger.debug("Attempting route classification", extra={"prompt": clf_prompt})
+    combined_prompt = f"""First, rephrase the user query into a standalone, self-contained question in Persian, incorporating relevant context from the conversation history and memory summary if it helps clarify references or pronouns. Keep it concise (under 50 words). Do not add new information.
+
+Memory summary: {mem_norm}
+Recent history:
+{hist_snippet}
+
+User query: {q_norm}
+
+Now, classify the refined query for Qeshm AI: use memory only to classify. Output: 'rag' for local info, 'google' for fresh/search, 'chat' for casual.
+
+Respond ONLY with valid JSON: {{"refined_query": "your refined query here", "route": "rag" or "google" or "chat"}}"""
 
     try:
-        route = llm.invoke(clf_prompt).content.strip().lower()
+        response = llm.invoke(combined_prompt, temperature=0).content.strip()
 
-        # Basic validation
+        json_match = re.search(r"\{.*?\}", response, re.DOTALL)
+        if json_match:
+            response = json_match.group(0)
+        parsed = json.loads(response)
+
+        refined_query = parsed.get("refined_query", q_norm).strip()
+        route = parsed.get("route", "google").lower()
+
+        # Validate
         if route not in ["rag", "google", "chat"]:
-            logger.warning(
-                f"Router returned invalid route: '{route}'. Defaulting to 'google'."
-            )
-            route = "google"
+            raise ValueError(f"Invalid route: {route}")
+        if len(refined_query) > 200:  # Safety cap
+            refined_query = q_norm
 
         logger.info(
-            "Routing decision",
-            extra={"route": route, "query": q_norm, "memory": mem_norm},
+            "Combined route and refine",
+            extra={"original": q_norm, "refined": refined_query, "route": route},
         )
-        return route
+        return route, refined_query
+
+    except json.JSONDecodeError as e:
+        logger.error(f"JSON parse failed: {e}. Response: {response}", exc_info=True)
+        return "google", q_norm  # Fallback
     except Exception as e:
-        logger.error(
-            f"Router LLM failed: {e}. Defaulting to 'google'.",
-            exc_info=True,
-            extra={"query": q_norm, "memory": mem_norm},
-        )
-        return "google"
+        logger.error(f"Route/refine failed: {e}. Defaulting.", exc_info=True)
+        return "google", q_norm  # Fallback
 
 
 # --- LangChain Setup ---
