@@ -1,9 +1,17 @@
+# utils.py
+"""
+Enhanced utilities with:
+- Personalized facts extraction and storage
+- Selective history compression
+- Clarification detection
+"""
+
 import re
 import json
 import logging
 import torch
 import functools
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Optional
 from langchain_community.embeddings import SentenceTransformerEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain_google_genai import ChatGoogleGenerativeAI
@@ -13,6 +21,7 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from langchain_core.runnables import RunnableWithMessageHistory
 from langchain_core.documents import Document
 import redis
+
 from config import (
     GEMINI_API_KEY,
     REDIS_URL,
@@ -22,497 +31,608 @@ from config import (
     MAX_CONTEXT_CHARS,
 )
 
-# Import prompts from the centralized prompt file
-from prompts import get_main_prompt, SUMMARIZE_PROMPT
+from prompts import (
+    get_main_prompt,
+    SUMMARIZE_PROMPT,
+    EXTRACT_FACTS_PROMPT,
+    CLARIFICATION_CHECK_PROMPT,
+    ROUTING_PROMPT_TEMPLATE,
+    GOOGLE_SEARCH_SYSTEM_PROMPT,
+    build_context_block,
+)
 from pythonjsonlogger import jsonlogger
 
-# --- Logging Setup ---
-# Set up a structured logger
+
+# ============================================================================
+# Logging Setup
+# ============================================================================
+
 logger = logging.getLogger("qeshm-ai")
-logger.setLevel(logging.DEBUG)  # Set to DEBUG to capture all log levels
-logger.propagate = False  # Prevent duplicate logs in root logger
+logger.setLevel(logging.DEBUG)
+logger.propagate = False
 
 if not logger.handlers:
-    stream_handler = logging.StreamHandler()
-
-    json_serializer = functools.partial(json.dumps, ensure_ascii=False)
-
+    handler = logging.StreamHandler()
     formatter = jsonlogger.JsonFormatter(
-        "%(asctime)s %(name)s %(levelname)s %(message)s %(module)s %(funcName)s %(lineno)d",
-        json_serializer=json_serializer,
+        "%(asctime)s %(name)s %(levelname)s %(message)s %(module)s %(funcName)s %(lineno)d"
     )
-
-    stream_handler.setFormatter(formatter)
-    logger.addHandler(stream_handler)
-
-logger.info("Logging configured")
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
 
 
-# --- Service Initialization ---
-
-# Redis Connection
-try:
-    redis_client = redis.from_url(REDIS_URL, decode_responses=True)
-    redis_client.ping()
-    logger.info(f"Redis connected successfully to {REDIS_URL}")
-except Exception as e:
-    logger.error(
-        f"Redis connection failed: {e}. Falling back to in-memory store.",
-        exc_info=True,
-    )
-    redis_client = None
-
-# In-memory fallbacks
-in_memory_store: Dict[str, ChatMessageHistory] = {}
-in_memory_conversation_memory: Dict[str, str] = {}
-
-
-# Embeddings
-try:
-    embeddings = SentenceTransformerEmbeddings(
-        model_name=EMBED_MODEL, encode_kwargs={"normalize_embeddings": True}
-    )
-    logger.info(f"Embedding model loaded: {EMBED_MODEL}")
-except Exception as e:
-    logger.critical(f"Failed to load embedding model: {e}", exc_info=True)
-    raise
-
-# Vector DB (Chroma)
-try:
-    vector_db = Chroma(persist_directory=CHROMA_DIR, embedding_function=embeddings)
-    retriever = vector_db.as_retriever(search_kwargs={"k": 8}, search_type="mmr")
-    logger.info(f"Chroma DB loaded from {CHROMA_DIR}. Retriever configured.")
-except Exception as e:
-    logger.critical(f"Failed to load Chroma DB: {e}", exc_info=True)
-    raise
-
-# LLM (Gemini)
-try:
-    llm = ChatGoogleGenerativeAI(
-        model="gemini-2.5-flash", google_api_key=GEMINI_API_KEY, temperature=0.2
-    )
-    logger.info("Gemini LLM initialized")
-except Exception as e:
-    logger.critical(f"Failed to initialize Gemini LLM: {e}", exc_info=True)
-    raise
-
-# Reranker
-reranker_tokenizer = None
-reranker_model = None
-try:
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    reranker_tokenizer = AutoTokenizer.from_pretrained(
-        RERANKER_ID, trust_remote_code=True
-    )
-    reranker_model = AutoModelForSequenceClassification.from_pretrained(
-        RERANKER_ID, trust_remote_code=True, torch_dtype=torch.float16
-    )
-    reranker_model.eval()
-    reranker_model.to(device)
-    logger.info(f"Reranker model loaded: {RERANKER_ID} on {device}")
-except Exception as e:
-    logger.warning(
-        f"Failed to load reranker model: {e}. Reranking will be disabled.",
-        exc_info=True,
-    )
-
-
-# --- Utility Functions ---
+# ============================================================================
+# Farsi Normalization
+# ============================================================================
 
 
 def normalize_farsi(text: str) -> str:
-    """Cleans and normalizes Persian text."""
-    if not isinstance(text, str):
-        return text
-    text = text.replace("ي", "ی").replace("ك", "ک").replace("ۀ", "ه").replace("ـ", "")
-    return re.sub(r"\s+", " ", text).strip()
+    """Normalize Persian/Farsi characters."""
+    text = text.replace("ي", "ی").replace("ك", "ک")
+    text = re.sub(r"[\u200c\u200d\u200e\u200f]+", " ", text)
+    return text.strip()
 
 
-# --- History & Memory Management ---
+# ============================================================================
+# Redis Session History Storage
+# ============================================================================
+
+try:
+    redis_client = redis.from_url(REDIS_URL, decode_responses=True)
+    redis_client.ping()
+    logger.info("Redis connected successfully", extra={"url": REDIS_URL})
+except Exception as e:
+    logger.warning(
+        "Redis connection failed. Falling back to in-memory store.",
+        extra={"error": str(e)},
+    )
+    redis_client = None
+
+in_memory_store: Dict[str, ChatMessageHistory] = {}
+in_memory_facts: Dict[str, dict] = {}  # 🆕 In-memory facts storage
 
 
 def get_session_history(session_id: str) -> ChatMessageHistory:
-    """Retrieves chat history from Redis or in-memory store."""
+    """Retrieve conversation history for a session."""
     if redis_client:
-        key = f"chat:history:{session_id}"
         try:
-            raw_data = redis_client.get(key)
-            if raw_data:
-                messages_data = json.loads(raw_data)
+            raw = redis_client.get(f"history:{session_id}")
+            if raw:
+                data = json.loads(raw)
                 history = ChatMessageHistory()
-                for m in messages_data:
-                    if m["type"] == "human":
-                        history.add_message(HumanMessage(content=m["content"]))
-                    elif m["type"] == "ai":
-                        history.add_message(AIMessage(content=m["content"]))
-                logger.debug(f"Loaded history from Redis: {session_id}")
+                for msg in data:
+                    if msg["type"] == "human":
+                        history.add_message(HumanMessage(content=msg["content"]))
+                    elif msg["type"] == "ai":
+                        history.add_message(AIMessage(content=msg["content"]))
+                logger.debug(
+                    "History loaded from Redis",
+                    extra={
+                        "session_id": session_id,
+                        "msg_count": len(history.messages),
+                    },
+                )
                 return history
         except Exception as e:
-            logger.warning(
-                f"Redis GET failed for {key}: {e}. Falling back to in-memory.",
-                exc_info=True,
+            logger.error(
+                "Failed to load history from Redis",
+                extra={"session_id": session_id, "error": str(e)},
             )
 
-    # Fallback to in-memory store
     if session_id not in in_memory_store:
-        logger.debug(f"Creating new in-memory history for: {session_id}")
         in_memory_store[session_id] = ChatMessageHistory()
-    else:
-        logger.debug(f"Loaded history from in-memory: {session_id}")
-
+        logger.debug(
+            "New in-memory history created",
+            extra={"session_id": session_id},
+        )
     return in_memory_store[session_id]
 
 
 def save_session_history(session_id: str, history: ChatMessageHistory):
-    """Saves chat history to Redis (if available)."""
-    if not redis_client:
-        logger.debug(f"In-memory store updated for: {session_id}")
-        return  # Using in-memory store
+    """Save conversation history for a session."""
+    if redis_client:
+        try:
+            data = [
+                {
+                    "type": "human" if isinstance(m, HumanMessage) else "ai",
+                    "content": m.content,
+                }
+                for m in history.messages
+            ]
+            redis_client.set(f"history:{session_id}", json.dumps(data), ex=86400 * 7)
+            logger.debug(
+                "History saved to Redis",
+                extra={"session_id": session_id, "msg_count": len(history.messages)},
+            )
+        except Exception as e:
+            logger.error(
+                "Failed to save history to Redis",
+                extra={"session_id": session_id, "error": str(e)},
+            )
+    else:
+        in_memory_store[session_id] = history
 
-    key = f"chat:history:{session_id}"
+
+# ============================================================================
+# User Facts Storage (Personalization) 🆕
+# ============================================================================
+
+
+def get_user_facts(session_id: str) -> dict:
+    """Retrieve personalized facts for a user."""
+    if redis_client:
+        try:
+            raw = redis_client.get(f"facts:{session_id}")
+            if raw:
+                facts = json.loads(raw)
+                logger.debug(
+                    "Facts loaded from Redis",
+                    extra={"session_id": session_id, "facts": facts},
+                )
+                return facts
+        except Exception as e:
+            logger.error(
+                "Failed to load facts from Redis",
+                extra={"session_id": session_id, "error": str(e)},
+            )
+
+    return in_memory_facts.get(session_id, {})
+
+
+def save_user_facts(session_id: str, facts: dict):
+    """Save personalized facts for a user."""
+    if redis_client:
+        try:
+            redis_client.set(f"facts:{session_id}", json.dumps(facts), ex=86400 * 30)
+            logger.debug(
+                "Facts saved to Redis",
+                extra={"session_id": session_id, "facts": facts},
+            )
+        except Exception as e:
+            logger.error(
+                "Failed to save facts to Redis",
+                extra={"session_id": session_id, "error": str(e)},
+            )
+    else:
+        in_memory_facts[session_id] = facts
+
+
+def extract_and_update_facts(session_id: str, history: ChatMessageHistory, llm) -> dict:
+    """
+    Extract facts from conversation history using LLM.
+
+    Args:
+        session_id: Session identifier
+        history: Conversation history
+        llm: LLM instance for extraction
+
+    Returns:
+        Updated facts dictionary
+    """
     try:
-        messages = [
-            {
-                "type": "human" if isinstance(m, HumanMessage) else "ai",
-                "content": m.content,
-            }
-            for m in history.messages
-        ]
-        redis_client.setex(key, 86400, json.dumps(messages))  # 24-hour expiry
-        logger.debug(f"Saved history to Redis: {session_id}")
-    except Exception as e:
-        logger.error(f"Redis SET failed for {key}: {e}", exc_info=True)
-
-
-def simple_keyword_summary(history: ChatMessageHistory) -> str:
-    """Original simple regex-based summarizer (as a fallback)."""
-    recent_msgs = history.messages[-6:]
-    user_recent = [m.content for m in recent_msgs if isinstance(m, HumanMessage)]
-    ai_recent = [m.content for m in recent_msgs if isinstance(m, AIMessage)]
-
-    all_texts = user_recent + ai_recent
-    keys = set()
-    for text in all_texts:
-        words = re.findall(
-            r"\b(?:قشم|کافه|رستوران|جاذبه|هتل|تور|دریا|بازار|ساحل|طبیعت|بیلیارد|بولینگ|اکسسوری|سیگار|ویو|عکاسی|سلخ|طبل|دژاوو|لیمبو|الماس|سیتی سنتر)\b",
-            text,
-            re.IGNORECASE,
+        # Get last 10 messages for fact extraction
+        recent_msgs = (
+            history.messages[-10:] if len(history.messages) > 10 else history.messages
         )
-        keys.update(w.lower() for w in words)
+        history_text = "\n".join(
+            [
+                f"{'کاربر' if isinstance(m, HumanMessage) else 'دستیار'}: {m.content}"
+                for m in recent_msgs
+            ]
+        )
 
-    if not keys:
-        return ""
+        # Extract facts using LLM
+        extraction_chain = EXTRACT_FACTS_PROMPT | llm
+        result = extraction_chain.invoke({"history_text": history_text})
 
-    sorted_keys = sorted(keys, key=len, reverse=True)[:5]
-    summary = "موضوعات اخیر: " + " • ".join(sorted_keys)
-    logger.debug(f"Generated simple keyword summary: {summary}")
-    return summary
+        # Parse JSON response
+        try:
+            # Extract JSON from response (handle markdown code blocks)
+            content = result.content if hasattr(result, "content") else str(result)
+            # Remove markdown code blocks if present
+            content = re.sub(r"```json\s*", "", content)
+            content = re.sub(r"```\s*", "", content)
+            new_facts = json.loads(content.strip())
+        except json.JSONDecodeError:
+            logger.warning(
+                "Failed to parse facts JSON, using empty dict",
+                extra={"session_id": session_id, "response": content[:200]},
+            )
+            new_facts = {}
+
+        # Merge with existing facts
+        existing_facts = get_user_facts(session_id)
+
+        # Deep merge logic
+        merged_facts = existing_facts.copy()
+        for key, value in new_facts.items():
+            if isinstance(value, dict) and key in merged_facts:
+                merged_facts[key] = {**merged_facts[key], **value}
+            elif isinstance(value, list) and key in merged_facts:
+                # Merge lists and remove duplicates
+                merged_facts[key] = list(set(merged_facts.get(key, []) + value))
+            else:
+                merged_facts[key] = value
+
+        # Save updated facts
+        save_user_facts(session_id, merged_facts)
+
+        logger.info(
+            "Facts extracted and updated",
+            extra={"session_id": session_id, "facts": merged_facts},
+        )
+
+        return merged_facts
+
+    except Exception as e:
+        logger.exception(
+            "Facts extraction failed",
+            extra={"session_id": session_id, "error": str(e)},
+        )
+        return get_user_facts(session_id)
 
 
-def llm_summarize_memory(session_id: str, history: ChatMessageHistory) -> str:
-    """Generates a concise summary of the conversation using an LLM."""
+# ============================================================================
+# Selective History Compression 🆕
+# ============================================================================
 
-    # Use simple summary for very short histories
-    if len(history.messages) <= 6:
-        logger.debug("History too short, using simple keyword summary")
-        summary = simple_keyword_summary(history)
-        in_memory_conversation_memory[session_id] = summary
-        return summary
 
-    history_text = "\n".join(
+def get_selective_history(
+    history: ChatMessageHistory,
+    recent_count: int = 4,
+) -> Tuple[str, str]:
+    """
+    Get selective history: recent messages verbatim + older summary.
+
+    Args:
+        history: Full conversation history
+        recent_count: Number of recent messages to include verbatim
+
+    Returns:
+        Tuple of (recent_history_text, earlier_summary_text)
+    """
+    if len(history.messages) <= recent_count:
+        # All history is recent
+        recent_text = "\n".join(
+            [
+                f"{'کاربر' if isinstance(m, HumanMessage) else 'دستیار'}: {m.content}"
+                for m in history.messages
+            ]
+        )
+        return recent_text, ""
+
+    # Split history
+    recent_msgs = history.messages[-recent_count:]
+    earlier_msgs = history.messages[:-recent_count]
+
+    # Recent messages verbatim
+    recent_text = "\n".join(
         [
-            f"{'User' if isinstance(m, HumanMessage) else 'AI'}: {m.content}"
-            for m in history.messages
+            f"{'کاربر' if isinstance(m, HumanMessage) else 'دستیار'}: {m.content}"
+            for m in recent_msgs
         ]
     )
 
-    try:
-        logger.debug(f"Attempting LLM summary for session: {session_id}")
-        summary_chain = SUMMARIZE_PROMPT | llm
-        summary = summary_chain.invoke({"history_text": history_text}).content
+    # Earlier messages summary (simple compression for now)
+    earlier_text = "\n".join(
+        [
+            f"{'کاربر' if isinstance(m, HumanMessage) else 'دستیار'}: {m.content[:100]}..."
+            for m in earlier_msgs[-6:]  # Last 6 of the earlier messages
+        ]
+    )
 
-        summary_cap = summary[:300]  # Cap to avoid bloat
-        in_memory_conversation_memory[session_id] = summary_cap
-        logger.info(
-            f"LLM summary generated for {session_id}",
-            extra={"summary": summary_cap, "original_len": len(summary)},
+    return recent_text, earlier_text
+
+
+# ============================================================================
+# Clarification Detection 🆕
+# ============================================================================
+
+
+def check_needs_clarification(
+    query: str,
+    user_facts: dict,
+    memory: str,
+    llm,
+) -> Tuple[bool, str]:
+    """
+    Check if the query needs clarification.
+
+    Args:
+        query: User query
+        user_facts: User's personalized facts
+        memory: Conversation memory summary
+        llm: LLM instance
+
+    Returns:
+        Tuple of (needs_clarification: bool, clarification_questions: str)
+    """
+    try:
+        # Format user facts for prompt
+        facts_str = (
+            json.dumps(user_facts, ensure_ascii=False) if user_facts else "ندارد"
         )
-        return summary_cap
+
+        clarification_chain = CLARIFICATION_CHECK_PROMPT | llm
+        result = clarification_chain.invoke(
+            {
+                "query": query,
+                "user_facts": facts_str,
+                "memory": memory or "ندارد",
+            }
+        )
+
+        content = result.content if hasattr(result, "content") else str(result)
+
+        if content.startswith("NEEDS_CLARIFICATION:"):
+            questions = content.replace("NEEDS_CLARIFICATION:", "").strip()
+            logger.info(
+                "Clarification needed",
+                extra={"query": query, "clarification": questions},
+            )
+            return True, questions
+        else:
+            logger.debug("Query is clear", extra={"query": query})
+            return False, ""
 
     except Exception as e:
-        logger.warning(
-            f"LLM summary failed: {e}. Falling back to simple summary.",
-            exc_info=True,
+        logger.exception("Clarification check failed", extra={"error": str(e)})
+        return False, ""
+
+
+# ============================================================================
+# LLM & Vector DB Setup (Unchanged)
+# ============================================================================
+
+llm = ChatGoogleGenerativeAI(
+    model="gemini-2.5-flash",
+    google_api_key=GEMINI_API_KEY,
+    temperature=0.2,
+)
+
+embeddings = SentenceTransformerEmbeddings(model_name=EMBED_MODEL)
+vector_db = Chroma(
+    persist_directory=CHROMA_DIR,
+    embedding_function=embeddings,
+)
+retriever = vector_db.as_retriever(search_kwargs={"k": 8})
+
+# Reranker setup
+reranker_tokenizer = AutoTokenizer.from_pretrained(RERANKER_ID, trust_remote_code=True)
+reranker_model = AutoModelForSequenceClassification.from_pretrained(
+    RERANKER_ID, trust_remote_code=True
+)
+if torch.cuda.is_available():
+    reranker_model = reranker_model.to("cuda")
+
+
+# ============================================================================
+# Chain with History
+# ============================================================================
+
+chain_with_history = RunnableWithMessageHistory(
+    llm,
+    get_session_history,
+    input_messages_key="input",
+    history_messages_key="history",
+)
+
+
+# ============================================================================
+# Memory Summarization (Enhanced) 🆕
+# ============================================================================
+
+
+def llm_summarize_memory(session_id: str, history: ChatMessageHistory) -> str:
+    """
+    Summarize conversation memory using LLM.
+    Also triggers fact extraction.
+    """
+    if len(history.messages) < 2:
+        return ""
+
+    try:
+        # Extract and update facts in parallel
+        extract_and_update_facts(session_id, history, llm)
+
+        # Summarize memory
+        history_text = "\n".join(
+            [
+                f"{'User' if isinstance(m, HumanMessage) else 'Assistant'}: {m.content}"
+                for m in history.messages[-10:]
+            ]
         )
-        # Fallback to simple keyword-based summary
-        summary = simple_keyword_summary(history)
-        in_memory_conversation_memory[session_id] = summary
-        return summary
+
+        summary_chain = SUMMARIZE_PROMPT | llm
+        result = summary_chain.invoke({"history_text": history_text})
+        summary = result.content if hasattr(result, "content") else str(result)
+
+        logger.debug(
+            "Memory summarized",
+            extra={"session_id": session_id, "summary": summary},
+        )
+
+        return summary.strip()
+
+    except Exception as e:
+        logger.exception(
+            "Memory summarization failed",
+            extra={"session_id": session_id, "error": str(e)},
+        )
+        # Fallback: simple keyword extraction
+        keywords = []
+        for msg in history.messages[-5:]:
+            if isinstance(msg, HumanMessage):
+                words = msg.content.split()[:5]
+                keywords.extend(words)
+        return " ".join(keywords[:15])
 
 
-# --- RAG & Search ---
+# ============================================================================
+# Route and Refine (Enhanced) 🆕
+# ============================================================================
+
+
+def route_and_refine(
+    user_input: str,
+    memory: str,
+    history: ChatMessageHistory,
+    user_facts: dict,
+) -> Tuple[str, str]:
+    """
+    Enhanced routing with user facts and selective history.
+    """
+    try:
+        # Get selective history
+        recent_history, _ = get_selective_history(history)
+
+        # Format facts
+        facts_str = (
+            json.dumps(user_facts, ensure_ascii=False) if user_facts else "ندارد"
+        )
+
+        routing_chain = ROUTING_PROMPT_TEMPLATE | llm
+        result = routing_chain.invoke(
+            {
+                "query": user_input,
+                "memory": memory or "ندارد",
+                "user_facts": facts_str,
+                "recent_history": recent_history or "ندارد",
+            }
+        )
+
+        content = result.content if hasattr(result, "content") else str(result)
+
+        # Parse JSON
+        content = re.sub(r"```json\s*", "", content)
+        content = re.sub(r"```\s*", "", content)
+        data = json.loads(content.strip())
+
+        route = data.get("route", "google")
+        refined_query = data.get("refined_query", user_input)
+
+        logger.info(
+            "Route and refine complete",
+            extra={
+                "original": user_input,
+                "route": route,
+                "refined": refined_query,
+            },
+        )
+
+        return route, refined_query
+
+    except Exception as e:
+        logger.exception("Route and refine failed", extra={"error": str(e)})
+        return "google", user_input
+
+
+# ============================================================================
+# RAG Functions (Unchanged)
+# ============================================================================
 
 
 def rerank_docs(
     query: str, docs: List[Document], top_k: int = 5
 ) -> List[Tuple[Document, float]]:
-    """Reranks retrieved documents using the reranker model."""
+    """Rerank documents using cross-encoder."""
     if not docs:
-        logger.debug("Rerank: received no documents")
         return []
 
-    if reranker_model is None or reranker_tokenizer is None:
-        logger.warning("Reranker unavailable. Returning top_k docs with dummy scores.")
-        return [(d, 1.0 / (i + 1)) for i, d in enumerate(docs[:top_k])]
-
-    texts = [d.page_content for d in docs]
-    logger.debug(f"Reranking {len(texts)} docs for query: {query}")
-
     try:
-        inputs = reranker_tokenizer(
-            [query] * len(texts),
-            texts,
-            padding=True,
-            truncation=True,
-            return_tensors="pt",
-        )
-        device = next(reranker_model.parameters()).device
-        inputs = {k: v.to(device) for k, v in inputs.items()}
-
+        pairs = [[query, doc.page_content] for doc in docs]
         with torch.no_grad():
-            out = reranker_model(**inputs)
-            logits = out.logits
-            if logits.dim() == 2:
-                # Handle different model output shapes
-                logits = logits.squeeze(-1) if logits.size(-1) == 1 else logits[:, -1]
-            # Use softmax for a 0-1 score distribution
-            scores = torch.softmax(logits.float(), dim=0).cpu().tolist()
+            inputs = reranker_tokenizer(
+                pairs,
+                padding=True,
+                truncation=True,
+                return_tensors="pt",
+                max_length=512,
+            )
+            if torch.cuda.is_available():
+                inputs = {k: v.to("cuda") for k, v in inputs.items()}
+            scores = (
+                reranker_model(**inputs, return_dict=True)
+                .logits.view(-1)
+                .cpu()
+                .float()
+                .numpy()
+            )
 
-        logger.debug(
-            f"Reranker scores calculated",
-            extra={
-                "min": min(scores),
-                "max": max(scores),
-                "avg": sum(scores) / len(scores),
-            },
-        )
+        doc_score_pairs = list(zip(docs, scores))
+        doc_score_pairs.sort(key=lambda x: x[1], reverse=True)
+        return doc_score_pairs[:top_k]
 
     except Exception as e:
-        logger.error(
-            f"Reranker failed: {e}. Falling back to dummy scores.", exc_info=True
-        )
-        scores = [1.0 / (i + 1) for i in range(len(texts))]
-
-    # Combine docs with scores and sort
-    ranked_results = sorted(zip(docs, scores), key=lambda x: x[1], reverse=True)
-
-    top_results = ranked_results[:top_k]
-    logger.info(
-        "Reranking complete",
-        extra={
-            "query": query,
-            "initial_doc_count": len(docs),
-            "final_doc_count": len(top_results),
-            "top_score": top_results[0][1] if top_results else 0.0,
-        },
-    )
-    return top_results
+        logger.error("Reranking failed", extra={"error": str(e)})
+        return [(d, 0.0) for d in docs[:top_k]]
 
 
 def build_context_from_docs(
     docs: List[Document], max_chars: int = MAX_CONTEXT_CHARS
 ) -> str:
-    """Builds a single context string from a list of documents."""
-    parts = []
-    total_chars = 0
-    doc_sources = []
+    """Build context string from documents."""
+    context_parts = []
+    char_count = 0
 
-    for i, d in enumerate(docs):
-        text = d.page_content
-        meta = getattr(d, "metadata", {}) or {}
-        # Find a source identifier
-        src = meta.get("name") or meta.get("source") or meta.get("id") or f"doc{i}"
-        doc_sources.append(src)
-
-        part = f"[source:{src}]\n{text}\n"
-
-        if total_chars + len(part) > max_chars:
-            logger.warning(
-                "Context truncated",
-                extra={
-                    "max_chars": max_chars,
-                    "total_chars": total_chars,
-                    "docs_included": len(parts),
-                    "docs_total": len(docs),
-                },
-            )
+    for doc in docs:
+        content = doc.page_content.strip()
+        if char_count + len(content) > max_chars:
             break
+        context_parts.append(content)
+        char_count += len(content)
 
-        parts.append(part)
-        total_chars += len(part)
+    return "\n\n".join(context_parts)
 
-    context = "\n\n".join(parts)
-    logger.info(
-        "Built RAG context",
-        extra={
-            "doc_count": len(parts),
-            "total_chars": total_chars,
-            "max_chars": max_chars,
-            "doc_sources": doc_sources,
-            "context": context,  # Log preview, not full context
-        },
-    )
-    return context
+
+# ============================================================================
+# Google Search (Enhanced - No Source Disclosure) 🆕
+# ============================================================================
 
 
 def google_search_summary(
     query: str,
-    history_summary: str = "",
-    full_history: List[BaseMessage] = None,
+    history_summary: str,
+    full_history: List[BaseMessage],
     rag_context: str = "",
+    user_facts: dict = None,
 ) -> str:
     """
-    Generates a summary using Google Search, with context from history and RAG.
+    Enhanced Google Search with no source disclosure.
     """
-    logger.info(
-        "Google Search invoked",
-        extra={
-            "query": query,
-            "history_summary_len": len(history_summary),
-            "rag_context_len": len(rag_context),
-            "full_history_len": len(full_history) if full_history else 0,
-        },
-    )
+    try:
 
-    # Build context from recent history
-    hist_context = ""
-    if full_history:
-        recent_msgs = full_history[-8:]  # Last 4 exchanges
-        formatted_history = []
-        for m in recent_msgs:
-            role = "کاربر" if isinstance(m, HumanMessage) else "دستیار"
-            formatted_history.append(f"{role}: {m.content}")
-        hist_context = (
-            f"تاریخچه مکالمه اخیر (برای ادامه دادن استفاده کن):\n"
-            + "\n".join(formatted_history)
+        llm_with_tools = ChatGoogleGenerativeAI(
+            model="gemini-2.5-pro",
+            google_api_key=GEMINI_API_KEY,
+            temperature=0.3,
         )
 
-    # Add RAG context if available (from low-confidence RAG)
-    rag_prompt_part = (
-        f"\nاطلاعات محلی کم اطمینان (برای تایید یا تکمیل استفاده کن): {rag_context}\n"
-        if rag_context
-        else ""
-    )
+        # Build context
+        context_parts = []
+        if history_summary:
+            context_parts.append(f"زمینه مکالمه: {history_summary}")
+        if rag_context:
+            context_parts.append(
+                f"اطلاعات محلی (ممکنه قدیمی باشه): {rag_context[:500]}"
+            )
 
-    # System prompt for the search LLM
-    system_prompt = f"""You are a web search assistant focusing on Qeshm Island, Iran. Prioritize local sources.
-Use the provided conversation history to contextualize and refine your search query if needed.
-History summary: {history_summary}
-{hist_context}
-{rag_prompt_part}
-اگر از جستجو استفاده کردی، در پاسخ بگو 'اطلاعات محلی مطمئن نبود، پس جستجو کردم'.
-Return concise Persian summary (3-4 sentences) + 2-4 sources as bullets.
-Always continue naturally from the history—do not repeat or ignore it."""
+        context = "\n".join(context_parts)
 
-    human_prompt = f"Search and summarize (in Persian) focusing on Qeshm: {query}"
+        # Use enhanced prompt (no source disclosure)
+        prompt = GOOGLE_SEARCH_SYSTEM_PROMPT.format(
+            context=context, query=query, user_facts=user_facts
+        )
 
-    full_llm_prompt = f"{system_prompt}\n\n{human_prompt}"
-
-    logger.debug(
-        "Google Search LLM prompt",
-        extra={"prompt_len": len(full_llm_prompt), "prompt": full_llm_prompt},
-    )
-
-    try:
-        # Define the tool for the LLM
-        tools = [{"google_search": {}}]
-        resp = llm.invoke(full_llm_prompt, tools=tools)
+        response = llm_with_tools.invoke(prompt, tools=[{"google_search": {}}])
+        answer = response.content if hasattr(response, "content") else str(response)
 
         logger.info(
-            "Google Search LLM execution successful",
-            extra={
-                "query": query,
-                "output_len": len(resp.content),
-                "output": resp.content,
-            },
+            "Google Search complete (no source disclosure)",
+            extra={"query": query, "answer_len": len(answer)},
         )
-        return resp.content
+
+        return answer
+
     except Exception as e:
-        logger.exception(f"Google/Gemini search tool failed: {e}")
-        # Re-raise to be caught by the main handler in app.py
-        raise
-
-
-def route_and_refine(
-    query: str, memory: str, history: ChatMessageHistory
-) -> Tuple[str, str]:
-    """Classifies and refines the query in one LLM call with JSON output."""
-    q_norm = normalize_farsi(query).lower()
-    mem_norm = normalize_farsi(memory).lower() if memory else ""
-
-    # Build recent history snippet for refinement (last 4 messages)
-    if len(history.messages) <= 2:
-        hist_snippet = ""  # Skip if short
-    else:
-        recent_msgs = history.messages[-4:]
-        hist_snippet = "\n".join(
-            [
-                f"{'User' if isinstance(m, HumanMessage) else 'AI'}: {m.content}"
-                for m in recent_msgs
-            ]
-        )
-
-    combined_prompt = f"""First, rephrase the user query into a standalone, self-contained question in Persian, incorporating relevant context from the conversation history and memory summary if it helps clarify references or pronouns. Keep it concise (under 50 words). Do not add new information.
-
-Memory summary: {mem_norm}
-Recent history:
-{hist_snippet}
-
-User query: {q_norm}
-
-Now, classify the refined query for Qeshm AI: use memory only to classify. Output: 'rag' for local info, 'google' for fresh/search, 'chat' for casual.
-
-Respond ONLY with valid JSON: {{"refined_query": "your refined query here", "route": "rag" or "google" or "chat"}}"""
-
-    try:
-        response = llm.invoke(combined_prompt, temperature=0).content.strip()
-
-        json_match = re.search(r"\{.*?\}", response, re.DOTALL)
-        if json_match:
-            response = json_match.group(0)
-        parsed = json.loads(response)
-
-        refined_query = parsed.get("refined_query", q_norm).strip()
-        route = parsed.get("route", "google").lower()
-
-        # Validate
-        if route not in ["rag", "google", "chat"]:
-            raise ValueError(f"Invalid route: {route}")
-        if len(refined_query) > 200:  # Safety cap
-            refined_query = q_norm
-
-        logger.info(
-            "Combined route and refine",
-            extra={"original": q_norm, "refined": refined_query, "route": route},
-        )
-        return route, refined_query
-
-    except json.JSONDecodeError as e:
-        logger.error(f"JSON parse failed: {e}. Response: {response}", exc_info=True)
-        return "google", q_norm  # Fallback
-    except Exception as e:
-        logger.error(f"Route/refine failed: {e}. Defaulting.", exc_info=True)
-        return "google", q_norm  # Fallback
-
-
-# --- LangChain Setup ---
-
-# Main RAG chain with history
-chain = get_main_prompt() | llm
-chain_with_history = RunnableWithMessageHistory(
-    chain,
-    get_session_history,
-    input_messages_key="input",
-    history_messages_key="history",
-)
-logger.info("Main LangChain RAG chain with history initialized")
+        logger.exception("Google search failed", extra={"error": str(e)})
+        return "متاسفانه نتونستم اطلاعات رو پیدا کنم. میتونی جزئیات بیشتری بدی؟"
