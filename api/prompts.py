@@ -1,4 +1,3 @@
-# prompts_enhanced.py (CORRECTED)
 """
 Enhanced prompts with:
 1. Clarification step
@@ -337,3 +336,118 @@ def build_context_block(
         blocks.append(f"**خلاصه کلی گفتگو:**\n{memory}")
 
     return "\n\n".join(blocks) if blocks else ""
+
+
+from langchain_core.prompts import ChatPromptTemplate
+
+# 🆕 Quality Evaluation Prompt (LLM-as-Judge)
+QUALITY_EVALUATION_PROMPT = ChatPromptTemplate.from_template(
+    """تو یک ارزیاب کیفیت پاسخ هستی. وظیفه‌ات این است که تشخیص بدی آیا پاسخ سیستم نیاز کاربر را برآورده می‌کنه یا نه.
+
+**سوال کاربر:**
+{query}
+
+**پاسخ سیستم:**
+{answer}
+
+**زمینه استفاده‌شده (RAG یا Google):**
+{context_used}
+
+**ارزیابی کن:**
+
+1. **کیفیت کلی (quality_score):** از 0 تا 1، این پاسخ چقدر خوب سوال رو جواب میده؟
+   - 0.0-0.3: پاسخ ضعیف (غیرمرتبط، ناقص، یا اشتباه)
+   - 0.4-0.6: پاسخ متوسط (نیاز اصلی رو برآورده نمیکنه اما مرتبطه)
+   - 0.7-0.9: پاسخ خوب (نیاز اصلی برآورده شده، کمی اطلاعات کم است)
+   - 1.0: پاسخ عالی (کامل، دقیق، و مفید)
+
+2. **مشکل اصلی (issue_type):** اگر کیفیت کمتر از 0.7 است، مشکل چیه؟
+   - "missing_contact_info": اطلاعات تماس (شماره، آدرس، نام کسب‌وکار) کم است
+   - "too_vague": پاسخ کلی است و جزئیات کافی نداره
+   - "wrong_context": اطلاعات نامرتبط یا اشتباه
+   - "incomplete": پاسخ ناقص است، بخشی از سوال بی‌پاسخ مونده
+   - "off_topic": پاسخ اصلاً به سوال ربط نداره
+   - "good": هیچ مشکلی نیست
+
+3. **توصیه برای بهبود (recommendation):**
+   - "accept": پاسخ خوبه، نیازی به تغییر نیست
+   - "google_search": نیاز به جستجوی گوگل برای اطلاعات تازه یا تماس
+   - "better_rag_query": نیاز به جستجوی بهتر در پایگاه داده محلی
+   - "add_more_context": نیاز به اضافه کردن اطلاعات بیشتر از منابع موجود
+
+**خروجی فقط JSON:**
+{{
+    "quality_score": 0.0-1.0,
+    "issue_type": "...",
+    "recommendation": "...",
+    "reason": "توضیح کوتاه چرا این امتیاز را دادی"
+}}
+
+**مهم:** دقیقاً به فرمت JSON پایبند باش. هیچ توضیح اضافی ننویس.
+"""
+)
+
+
+# 🆕 Query Refinement Prompt
+QUERY_REFINEMENT_PROMPT = ChatPromptTemplate.from_template(
+    """پاسخ قبلی کیفیت کافی نداشت. باید سوال رو بهتر بازنویسی کنی.
+
+**سوال اصلی کاربر:**
+{original_query}
+
+**پاسخ قبلی (ضعیف):**
+{previous_answer}
+
+**مشکل تشخیص‌داده‌شده:**
+{issue_type}
+
+**دلیل:**
+{reason}
+
+**تاریخچه مکالمه:**
+{conversation_history}
+
+**وظیفه:** سوال رو طوری بازنویسی کن که برای جستجو (Google یا RAG) دقیق‌تر و مفیدتر باشه.
+
+**راهنمایی بازنویسی:**
+- اگر مشکل "missing_contact_info" بود: تأکید کن که نیاز به شماره تلفن، آدرس، یا نام کسب‌وکار داره
+- اگر مشکل "too_vague" بود: سوال رو مشخص‌تر و جزئی‌تر کن
+- اگر مشکل "wrong_context" بود: سوال رو با کلمات کلیدی بهتر و واضح‌تر بنویس
+- اگر مشکل "incomplete" بود: بخش‌های بی‌پاسخ رو برجسته کن
+
+**خروجی فقط JSON:**
+{{
+    "refined_query": "سوال بازنویسی‌شده",
+    "search_strategy": "google_search یا better_rag_query",
+    "focus_areas": ["area1", "area2"]
+}}
+"""
+)
+
+
+# 🆕 Context Enhancement Prompt
+CONTEXT_ENHANCEMENT_PROMPT = ChatPromptTemplate.from_template(
+    """پاسخ قبلی ناقص بود. با استفاده از اطلاعات موجود، پاسخ کامل‌تری بده.
+
+**سوال کاربر:**
+{query}
+
+**پاسخ قبلی (ناقص):**
+{previous_answer}
+
+**اطلاعات اضافی موجود:**
+{additional_context}
+
+**مشکل:**
+{issue_type} - {reason}
+
+**وظیفه:**
+پاسخ قبلی رو با استفاده از اطلاعات اضافی کامل کن. پاسخ جدید باید:
+- کامل و جامع باشه
+- تمام جنبه‌های سوال رو پوشش بده
+- اطلاعات دقیق و کاربردی داشته باشه
+- به زبان فارسی و با لحن دوستانه جعوک باشه
+
+**پاسخ کامل‌شده:**
+"""
+)

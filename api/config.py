@@ -23,3 +23,19 @@ MAX_HISTORY_LEN = int(os.getenv("MAX_HISTORY_LEN", "20"))  # Max messages to kee
 
 # --- Server ---
 PORT = int(os.getenv("PORT", 8001))
+
+
+# 🆕 NEW: Self-Correction Configuration
+MAX_REFINEMENT_ITERATIONS = 2  # Configurable max retries (default: 2)
+ENABLE_QUALITY_GATE = True  # Toggle self-correction on/off
+QUALITY_GATE_THRESHOLD = 0.7  # Minimum quality score (0-1) to accept answer
+SHOW_RETRY_ATTEMPTS = False  # If True, show "I'm refining my answer..." to user
+
+# Refinement strategies
+REFINEMENT_STRATEGIES = {
+    "missing_contact_info": "google_search",
+    "too_vague": "better_rag_query",
+    "wrong_context": "google_search",
+    "incomplete": "add_more_context",
+    "off_topic": "google_search",
+}

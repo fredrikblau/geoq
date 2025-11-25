@@ -1,4 +1,3 @@
-# utils.py
 """
 Enhanced utilities with:
 - Personalized facts extraction and storage
@@ -11,6 +10,22 @@ import json
 import logging
 import torch
 import functools
+import re
+import json
+from typing import Dict, Tuple
+from langchain_core.messages import BaseMessage
+
+from config import (
+    MAX_REFINEMENT_ITERATIONS,
+    ENABLE_QUALITY_GATE,
+    QUALITY_GATE_THRESHOLD,
+    REFINEMENT_STRATEGIES,
+)
+from prompts import (
+    QUALITY_EVALUATION_PROMPT,
+    QUERY_REFINEMENT_PROMPT,
+    CONTEXT_ENHANCEMENT_PROMPT,
+)
 from typing import List, Dict, Tuple, Optional
 from langchain_community.embeddings import SentenceTransformerEmbeddings
 from langchain_community.vectorstores import Chroma
@@ -636,3 +651,237 @@ def google_search_summary(
     except Exception as e:
         logger.exception("Google search failed", extra={"error": str(e)})
         return "متاسفانه نتونستم اطلاعات رو پیدا کنم. میتونی جزئیات بیشتری بدی؟"
+
+
+# 🆕 Quality Evaluation Function
+def evaluate_answer_quality(
+    query: str,
+    answer: str,
+    context_used: str,
+) -> Dict:
+    """
+    Evaluate answer quality using LLM-as-judge.
+
+    Args:
+        query: Original user query
+        answer: Generated answer
+        context_used: Context source (RAG/Google/etc)
+
+    Returns:
+        Dict with quality_score, issue_type, recommendation, reason
+    """
+    try:
+        evaluation_chain = QUALITY_EVALUATION_PROMPT | llm
+        result = evaluation_chain.invoke(
+            {
+                "query": query,
+                "answer": answer,
+                "context_used": context_used or "ندارد",
+            }
+        )
+
+        content = result.content if hasattr(result, "content") else str(result)
+
+        # Parse JSON
+        content = re.sub(r"```json\s*", "", content)
+        content = re.sub(r"```\s*", "", content)
+        evaluation = json.loads(content.strip())
+
+        logger.info(
+            "Quality evaluation complete",
+            extra={
+                "query": query[:100],
+                "quality_score": evaluation.get("quality_score", 0),
+                "issue_type": evaluation.get("issue_type", "unknown"),
+                "recommendation": evaluation.get("recommendation", "unknown"),
+            },
+        )
+
+        return evaluation
+
+    except json.JSONDecodeError as e:
+        logger.error(
+            "Quality evaluation JSON parse failed",
+            extra={"error": str(e), "response": content[:200]},
+        )
+        # Fallback: assume acceptable quality
+        return {
+            "quality_score": 0.8,
+            "issue_type": "good",
+            "recommendation": "accept",
+            "reason": "Evaluation failed, assuming acceptable",
+        }
+
+    except Exception as e:
+        logger.exception("Quality evaluation failed", extra={"error": str(e)})
+        return {
+            "quality_score": 0.8,
+            "issue_type": "good",
+            "recommendation": "accept",
+            "reason": "Evaluation error, assuming acceptable",
+        }
+
+
+# 🆕 Query Refinement Function
+def refine_query_for_retry(
+    original_query: str,
+    previous_answer: str,
+    issue_type: str,
+    reason: str,
+    conversation_history: str,
+) -> Tuple[str, str]:
+    """
+    Refine query based on identified issues.
+
+    Args:
+        original_query: Original user query
+        previous_answer: Previous (poor quality) answer
+        issue_type: Type of issue identified
+        reason: Reason for poor quality
+        conversation_history: Recent conversation context
+
+    Returns:
+        Tuple of (refined_query, search_strategy)
+    """
+    try:
+        refinement_chain = QUERY_REFINEMENT_PROMPT | llm
+        result = refinement_chain.invoke(
+            {
+                "original_query": original_query,
+                "previous_answer": previous_answer,
+                "issue_type": issue_type,
+                "reason": reason,
+                "conversation_history": conversation_history or "ندارد",
+            }
+        )
+
+        content = result.content if hasattr(result, "content") else str(result)
+
+        # Parse JSON
+        content = re.sub(r"```json\s*", "", content)
+        content = re.sub(r"```\s*", "", content)
+        refinement = json.loads(content.strip())
+
+        refined_query = refinement.get("refined_query", original_query)
+        search_strategy = refinement.get("search_strategy", "google_search")
+
+        logger.info(
+            "Query refinement complete",
+            extra={
+                "original": original_query[:100],
+                "refined": refined_query[:100],
+                "strategy": search_strategy,
+            },
+        )
+
+        return refined_query, search_strategy
+
+    except Exception as e:
+        logger.exception("Query refinement failed", extra={"error": str(e)})
+        # Fallback: use original query + force Google
+        return original_query, "google_search"
+
+
+# 🆕 Context Enhancement Function
+def enhance_answer_with_context(
+    query: str,
+    previous_answer: str,
+    additional_context: str,
+    issue_type: str,
+    reason: str,
+) -> str:
+    """
+    Enhance incomplete answer with additional context.
+
+    Args:
+        query: User query
+        previous_answer: Incomplete answer
+        additional_context: Additional context to incorporate
+        issue_type: Type of issue
+        reason: Reason for enhancement
+
+    Returns:
+        Enhanced answer
+    """
+    try:
+        enhancement_chain = CONTEXT_ENHANCEMENT_PROMPT | llm
+        result = enhancement_chain.invoke(
+            {
+                "query": query,
+                "previous_answer": previous_answer,
+                "additional_context": additional_context,
+                "issue_type": issue_type,
+                "reason": reason,
+            }
+        )
+
+        enhanced_answer = result.content if hasattr(result, "content") else str(result)
+
+        logger.info(
+            "Answer enhancement complete",
+            extra={
+                "query": query[:100],
+                "enhanced_len": len(enhanced_answer),
+            },
+        )
+
+        return enhanced_answer
+
+    except Exception as e:
+        logger.exception("Answer enhancement failed", extra={"error": str(e)})
+        return previous_answer  # Fallback to original
+
+
+# 🆕 Check if refinement should happen
+def should_refine_answer(evaluation: Dict) -> bool:
+    """
+    Decide if answer needs refinement based on evaluation.
+
+    Args:
+        evaluation: Quality evaluation result
+
+    Returns:
+        True if should refine, False otherwise
+    """
+    if not ENABLE_QUALITY_GATE:
+        return False
+
+    quality_score = evaluation.get("quality_score", 1.0)
+    recommendation = evaluation.get("recommendation", "accept")
+
+    # Refine if quality below threshold AND recommendation is not "accept"
+    should_refine = (
+        quality_score < QUALITY_GATE_THRESHOLD and recommendation != "accept"
+    )
+
+    logger.debug(
+        "Refinement decision",
+        extra={
+            "quality_score": quality_score,
+            "threshold": QUALITY_GATE_THRESHOLD,
+            "recommendation": recommendation,
+            "will_refine": should_refine,
+        },
+    )
+
+    return should_refine
+
+
+# 🆕 Get refinement strategy
+def get_refinement_strategy(issue_type: str, recommendation: str) -> str:
+    """
+    Determine refinement strategy based on issue type.
+
+    Args:
+        issue_type: Type of quality issue
+        recommendation: LLM recommendation
+
+    Returns:
+        Strategy name (google_search, better_rag_query, etc.)
+    """
+    # Use recommendation if it's a valid strategy
+    if recommendation in ["google_search", "better_rag_query", "add_more_context"]:
+        return recommendation
+
+    # Otherwise use issue type mapping
+    return REFINEMENT_STRATEGIES.get(issue_type, "google_search")
