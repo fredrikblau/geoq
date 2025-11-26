@@ -201,7 +201,7 @@ async def stream_graph_execution(
                             "id": cmpl_id,
                             "object": "chat.completion.chunk",
                             "created": created,
-                            "model": "gemini-2.5-flash (Google Search)",
+                            "model": "Geoq (Google Search)",
                             "choices": [
                                 {
                                     "index": 0,
@@ -213,7 +213,7 @@ async def stream_graph_execution(
                         yield f"data: {json.dumps(delta)}\n\n"
 
                     # End of stream
-                    yield f"data: {json.dumps({'id': cmpl_id, 'object': 'chat.completion.chunk', 'created': created, 'model': 'gemini-2.5-flash', 'choices': [{'index': 0, 'delta': {}, 'finish_reason': 'stop'}]})}\n\n"
+                    yield f"data: {json.dumps({'id': cmpl_id, 'object': 'chat.completion.chunk', 'created': created, 'model': 'Geoq', 'choices': [{'index': 0, 'delta': {}, 'finish_reason': 'stop'}]})}\n\n"
                     yield "data: [DONE]\n\n"
                     return
 
@@ -254,7 +254,7 @@ async def stream_graph_execution(
                             "id": cmpl_id,
                             "object": "chat.completion.chunk",
                             "created": created,
-                            "model": "gemini-2.5-flash",
+                            "model": "Geoq",
                             "choices": [
                                 {
                                     "index": 0,
@@ -279,7 +279,7 @@ async def stream_graph_execution(
                                 "id": cmpl_id,
                                 "object": "chat.completion.chunk",
                                 "created": created,
-                                "model": "gemini-2.5-flash",
+                                "model": "Geoq",
                                 "choices": [
                                     {
                                         "index": 0,
@@ -306,7 +306,7 @@ async def stream_graph_execution(
                     )
 
                     # End of stream
-                    yield f"data: {json.dumps({'id': cmpl_id, 'object': 'chat.completion.chunk', 'created': created, 'model': 'gemini-2.5-flash', 'choices': [{'index': 0, 'delta': {}, 'finish_reason': 'stop'}]})}\n\n"
+                    yield f"data: {json.dumps({'id': cmpl_id, 'object': 'chat.completion.chunk', 'created': created, 'model': 'Geoq', 'choices': [{'index': 0, 'delta': {}, 'finish_reason': 'stop'}]})}\n\n"
                     yield "data: [DONE]\n\n"
                     return
 
@@ -321,7 +321,7 @@ async def stream_graph_execution(
             "id": cmpl_id,
             "object": "chat.completion.chunk",
             "created": created,
-            "model": "gemini-2.5-flash",
+            "model": "Geoq",
             "choices": [
                 {
                     "index": 0,
@@ -398,11 +398,11 @@ async def chat_completions(req: ChatRequest):
 
             # Determine model name based on route
             if error_info:
-                model_name = "GEOQ-Critical-Fallback"
+                model_name = "Geoq-Critical-Fallback"
             elif route == "google" or final_state.get("google_answer"):
-                model_name = "gemini-2.5-flash (Google Search)"
+                model_name = "Geoq (Google Search)"
             else:
-                model_name = "gemini-2.5-flash"
+                model_name = "Geoq"
 
             response = ChatCompletionResponse(
                 id=cmpl_id,
@@ -446,7 +446,7 @@ async def chat_completions(req: ChatRequest):
         response = ChatCompletionResponse(
             id=f"chatcmpl-{int(time.time())}",
             created=int(time.time()),
-            model="GEOQ-Critical-Fallback",
+            model="Geoq-Critical-Fallback",
             choices=[
                 {
                     "index": 0,
