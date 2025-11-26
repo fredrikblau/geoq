@@ -308,8 +308,8 @@ async def stream_graph_execution(
             "stream_graph_execution failed",
             extra={"session_id": session_id, "error": str(e)},
         )
-        if is_thinking_open:
-            yield f"data: {json.dumps({'choices': [{'delta': {'content': f'\nError: {e}</think>'}}]})}\n\n"
+        # if is_thinking_open:
+        #     yield f"data: {json.dumps({'choices': [{'delta': {'content': f'\nError: {e}</think>'}}]})}\n\n"
 
         err_chunk = {
             "id": cmpl_id,
