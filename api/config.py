@@ -26,9 +26,9 @@ PORT = int(os.getenv("PORT", 8001))
 
 
 # 🆕 NEW: Self-Correction Configuration
-MAX_REFINEMENT_ITERATIONS = 2  # Configurable max retries (default: 2)
+MAX_REFINEMENT_ITERATIONS = 1  # Configurable max retries (default: 2)
 ENABLE_QUALITY_GATE = True  # Toggle self-correction on/off
-QUALITY_GATE_THRESHOLD = 0.7  # Minimum quality score (0-1) to accept answer
+QUALITY_GATE_THRESHOLD = 0.5  # Minimum quality score (0-1) to accept answer
 SHOW_RETRY_ATTEMPTS = False  # If True, show "I'm refining my answer..." to user
 
 # Refinement strategies

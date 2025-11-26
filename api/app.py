@@ -10,6 +10,7 @@ This module:
 
 import time
 import json
+import asyncio
 from typing import List, Optional, Dict, Any
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
@@ -157,51 +158,121 @@ async def stream_graph_execution(
     created: int,
 ):
     """
-    Streams the LangGraph execution and yields SSE chunks.
+    Streams minimal, user-friendly <think> logs and ensures the final answer
+    is streamed only once.
     """
-    # Prepare initial state
-    initial_state: ConversationState = {
-        "session_id": session_id,
-        "user_input_raw": user_input,
-        "messages_from_request": [msg.dict() for msg in messages],
-        "is_streaming": True,
-        "completion_id": cmpl_id,
-        "created_timestamp": created,
+    full_content = ""
+    is_thinking_open = False
+    # <--- THE FIX: New flag to prevent response duplication --->
+    has_final_answer_streamed = False
+
+    # Minimalist status messages - Only for major steps
+    FRIENDLY_STATUSES = {
+        "load_history_memory_and_facts": "در حال فکر کردن روی سوالت و مرور مکالمه قبلی هستم...",
+        "perform_rag_retrieval": "در حال جمع آوری اطلاعات هستم...",
+        "perform_google_search": "در حال جستجو در اینترنت هستم...",
+        "generate_llm_response": "نتایج را بررسی می‌کنم و بهترین پاسخ را پیدا می‌کنم...",
+        "finalize_answer": "تقریباً آماده است...",  # Added for a visible final step
     }
 
-    logger.info(
-        "Starting graph execution (streaming)",
-        extra={"session_id": session_id, "user_input": user_input},
-    )
-
-    full_content = ""
-    route = "unknown"
-
     try:
-        # Run the graph step by step
-        state = initial_state
-        for step_output in conversation_graph.stream(state):
+        # 1. Initialize State
+        initial_state = {
+            "session_id": session_id,
+            "user_input_raw": user_input,
+            "messages_from_request": [m.dict() for m in messages],
+            "is_streaming": True,
+            "completion_id": cmpl_id,
+            "created_timestamp": created,
+        }
+
+        # 2. Open the <think> tag (Static start)
+        start_think_chunk = {
+            "id": cmpl_id,
+            "object": "chat.completion.chunk",
+            "created": created,
+            "model": "geoq-0",
+            "choices": [
+                {"index": 0, "delta": {"content": "<think>\n"}, "finish_reason": None}
+            ],
+        }
+        yield f"data: {json.dumps(start_think_chunk)}\n\n"
+        is_thinking_open = True
+
+        # 3. Stream LangGraph steps
+        async for step_output in conversation_graph.astream(initial_state):
             for node_name, node_state in step_output.items():
-                state = node_state
 
-                # Check if we've reached Google search node
-                if node_name == "perform_google_search" and node_state.get(
-                    "google_answer"
+                # --- Logic A: Minimal Thinking Logs ---
+                # Only update if the node is in our friendly list
+                status_msg = FRIENDLY_STATUSES.get(node_name)
+
+                if status_msg and not has_final_answer_streamed:
+                    log_chunk = {
+                        "id": cmpl_id,
+                        "object": "chat.completion.chunk",
+                        "created": created,
+                        "model": "geoq-0",
+                        "choices": [
+                            {
+                                "index": 0,
+                                "delta": {"content": f"> {status_msg}\n"},
+                                "finish_reason": None,
+                            }
+                        ],
+                    }
+                    yield f"data: {json.dumps(log_chunk)}\n\n"
+                    await asyncio.sleep(0.01)
+
+                # --- Logic B: Handle Final Output (Stream Only Once) ---
+
+                llm_output = node_state.get("llm_output")
+
+                # Check for final answers (Clarification, Google Answer, or Final LLM)
+                is_clarification = (
+                    node_name == "check_clarification_needed"
+                    and node_state.get("needs_clarification")
+                )
+                is_google_direct = (
+                    node_name == "perform_google_search"
+                    and node_state.get("google_answer")
+                )
+                is_final_node = node_name == "finalize_answer"
+
+                if (
+                    llm_output
+                    and (is_final_node or is_clarification or is_google_direct)
+                    and not has_final_answer_streamed  # <--- THE CRITICAL CHECK
                 ):
-                    answer = node_state["google_answer"]
-                    route = "google"
 
-                    # Yield the answer in chunks
-                    chunk_size = 50
-                    for i in range(0, len(answer), chunk_size):
-                        chunk_text = answer[i : i + chunk_size]
-                        full_content += chunk_text
-
-                        delta = {
+                    # 1. Close <think>
+                    if is_thinking_open:
+                        close_think = {
                             "id": cmpl_id,
                             "object": "chat.completion.chunk",
                             "created": created,
-                            "model": "Geoq (Google Search)",
+                            "model": "geoq-0",
+                            "choices": [
+                                {
+                                    "index": 0,
+                                    "delta": {"content": "\n</think>\n\n"},
+                                    "finish_reason": None,
+                                }
+                            ],
+                        }
+                        yield f"data: {json.dumps(close_think)}\n\n"
+                        is_thinking_open = False
+
+                    # 2. Stream the Answer
+                    # Split into chunks for "typing" effect
+                    chunk_size = 30
+                    for i in range(0, len(llm_output), chunk_size):
+                        chunk_text = llm_output[i : i + chunk_size]
+                        content_delta = {
+                            "id": cmpl_id,
+                            "object": "chat.completion.chunk",
+                            "created": created,
+                            "model": "geoq-0",
                             "choices": [
                                 {
                                     "index": 0,
@@ -210,127 +281,50 @@ async def stream_graph_execution(
                                 }
                             ],
                         }
-                        yield f"data: {json.dumps(delta)}\n\n"
+                        yield f"data: {json.dumps(content_delta)}\n\n"
+                        await asyncio.sleep(0.01)
 
-                    # End of stream
-                    yield f"data: {json.dumps({'id': cmpl_id, 'object': 'chat.completion.chunk', 'created': created, 'model': 'Geoq', 'choices': [{'index': 0, 'delta': {}, 'finish_reason': 'stop'}]})}\n\n"
-                    yield "data: [DONE]\n\n"
-                    return
+                    # 3. Mark as streamed
+                    has_final_answer_streamed = True
+                    full_content = llm_output
 
-                # Check if we've reached LLM generation node
-                if node_name == "build_final_input":
-                    # We have the final_input ready, now stream the LLM
-                    final_input = node_state.get("final_input", "")
-                    context_block = node_state.get("context_block", "")
-                    clarification_suggestions = node_state.get(
-                        "clarification_questions", ""
-                    )
-                    route = node_state.get("route", "unknown")
-                    history = node_state.get("history")
+        # 4. Finish Stream safely
+        # Note: If has_final_answer_streamed is True, we only need the DONE signal.
+        if is_thinking_open:
+            yield f"data: {json.dumps({'choices': [{'delta': {'content': '</think>'}}]})}\n\n"
 
-                    logger.debug(
-                        "Starting LLM stream generation",
-                        extra={"session_id": session_id, "route": route},
-                    )
-
-                    # Build the prompt and stream directly from LLM
-
-                    prompt = get_main_prompt()
-                    chain = prompt | llm
-
-                    # Stream the LLM output
-                    for chunk in chain.stream(
-                        {
-                            "context_block": context_block,
-                            "input": final_input,
-                        }
-                    ):
-                        content_chunk = (
-                            chunk.content if hasattr(chunk, "content") else str(chunk)
-                        )
-                        full_content += content_chunk
-
-                        delta = {
-                            "id": cmpl_id,
-                            "object": "chat.completion.chunk",
-                            "created": created,
-                            "model": "Geoq",
-                            "choices": [
-                                {
-                                    "index": 0,
-                                    "delta": {"content": content_chunk},
-                                    "finish_reason": None,
-                                }
-                            ],
-                        }
-                        yield f"data: {json.dumps(delta)}\n\n"
-
-                    # Append and stream clarification suggestions if available
-                    if clarification_suggestions:
-                        suggestion_text = f"\n\n{clarification_suggestions}"
-                        full_content += suggestion_text
-
-                        # Stream the suggestions
-                        chunk_size = 50
-                        for i in range(0, len(suggestion_text), chunk_size):
-                            chunk_text = suggestion_text[i : i + chunk_size]
-
-                            delta = {
-                                "id": cmpl_id,
-                                "object": "chat.completion.chunk",
-                                "created": created,
-                                "model": "Geoq",
-                                "choices": [
-                                    {
-                                        "index": 0,
-                                        "delta": {"content": chunk_text},
-                                        "finish_reason": None,
-                                    }
-                                ],
-                            }
-                            yield f"data: {json.dumps(delta)}\n\n"
-
-                    # Save the full response to history
-                    if history:
-                        history.add_message(AIMessage(content=full_content))
-                        save_session_history(session_id, history)
-
-                    logger.info(
-                        "Stream generation complete",
-                        extra={
-                            "session_id": session_id,
-                            "route": route,
-                            "response_len": len(full_content),
-                            "has_suggestions": bool(clarification_suggestions),
-                        },
-                    )
-
-                    # End of stream
-                    yield f"data: {json.dumps({'id': cmpl_id, 'object': 'chat.completion.chunk', 'created': created, 'model': 'Geoq', 'choices': [{'index': 0, 'delta': {}, 'finish_reason': 'stop'}]})}\n\n"
-                    yield "data: [DONE]\n\n"
-                    return
-
-    except Exception as e:
-        logger.exception(
-            "Stream generation failed",
-            extra={"session_id": session_id, "error": str(e)},
-        )
-
-        full_content = "ببخشید، مشکلی پیش اومد."
-        error_delta = {
+        stop_delta = {
             "id": cmpl_id,
             "object": "chat.completion.chunk",
             "created": created,
-            "model": "Geoq",
+            "model": "geoq-0",
+            "choices": [{"index": 0, "delta": {}, "finish_reason": "stop"}],
+        }
+        yield f"data: {json.dumps(stop_delta)}\n\n"
+        yield "data: [DONE]\n\n"
+
+    except Exception as e:
+        logger.exception(
+            "stream_graph_execution failed",
+            extra={"session_id": session_id, "error": str(e)},
+        )
+        if is_thinking_open:
+            yield f"data: {json.dumps({'choices': [{'delta': {'content': f'\nError: {e}</think>'}}]})}\n\n"
+
+        err_chunk = {
+            "id": cmpl_id,
+            "object": "chat.completion.chunk",
+            "created": created,
+            "model": "geoq-0",
             "choices": [
                 {
                     "index": 0,
-                    "delta": {"content": full_content},
+                    "delta": {"content": "ببخشید، مشکلی پیش اومد."},
                     "finish_reason": "stop",
                 }
             ],
         }
-        yield f"data: {json.dumps(error_delta)}\n\n"
+        yield f"data: {json.dumps(err_chunk)}\n\n"
         yield "data: [DONE]\n\n"
 
 
@@ -468,7 +462,7 @@ async def chat_completions(req: ChatRequest):
 async def health():
     """Health check endpoint."""
     logger.debug("Health check invoked")
-    return {"status": "ok", "model": "GEOQ", "orchestration": "LangGraph"}
+    return {"status": "ok", "model": "geoq-0", "orchestration": "LangGraph"}
 
 
 @app.get("/v1/models")

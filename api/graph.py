@@ -560,7 +560,7 @@ def generate_llm_response(state: ConversationState) -> ConversationState:
     logger.info("Node: generate_llm_response", extra={"session_id": session_id})
 
     try:
-        from prompts_enhanced import get_main_prompt
+        from prompts import get_main_prompt
 
         prompt = get_main_prompt()
         chain = prompt | llm
