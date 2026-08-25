@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Geoq demo chat</title>
+  <style>
+    :root { color-scheme: light; --ink:#123044; --muted:#718391; --blue:#0b4f6c; --teal:#0fb3a6; --surface:#f5fafb; }
+    * { box-sizing: border-box; }
+    body { margin:0; min-height:100vh; font-family: system-ui, sans-serif; color:var(--ink); background:linear-gradient(135deg,#eaf7f7,#f5f7fb); }
+    main { width:min(720px, calc(100% - 32px)); margin:32px auto; background:#fff; border-radius:24px; box-shadow:0 18px 60px #0b4f6c22; overflow:hidden; }
+    header { padding:24px 28px; color:#fff; background:linear-gradient(120deg,var(--blue),var(--teal)); }
+    h1 { margin:0 0 4px; font-size:1.5rem; } header p { margin:0; opacity:.86; }
+    #messages { min-height:420px; padding:24px; display:flex; flex-direction:column; gap:14px; }
+    .bubble { max-width:82%; padding:13px 16px; border-radius:18px; white-space:pre-wrap; line-height:1.8; }
+    .assistant { align-self:flex-start; background:var(--surface); border-bottom-right-radius:4px; }
+    .user { align-self:flex-end; color:#fff; background:var(--blue); border-bottom-left-radius:4px; }
+    form { display:flex; gap:10px; padding:16px 20px 20px; border-top:1px solid #e6eef0; }
+    input { min-width:0; flex:1; border:1px solid #cbdde0; border-radius:14px; padding:13px 15px; font:inherit; }
+    button { border:0; border-radius:14px; padding:0 20px; color:#fff; background:var(--teal); font:inherit; cursor:pointer; }
+    button:disabled { opacity:.55; cursor:wait; }
+    .status { padding:0 24px 12px; color:var(--muted); font-size:.85rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <header><h1>جعوک · Geoq</h1><p>راهنمای بومی قشم و جزایر اطراف</p></header>
+    <section id="messages" aria-live="polite">
+      <div class="bubble assistant">سلام! من جعوک هستم 🦎<br>برای کشف قشم چه کمکی از من می‌خواهی؟</div>
+    </section>
+    <div class="status" id="status">API: http://localhost:8001</div>
+    <form id="chat-form">
+      <input id="prompt" required autocomplete="off" placeholder="مثلاً برای یک روز در قشم برنامه بده">
+      <button id="send" type="submit">ارسال</button>
+    </form>
+  </main>
+  <script>
+    const history = [];
+    const messages = document.querySelector('#messages');
+    const form = document.querySelector('#chat-form');
+    const prompt = document.querySelector('#prompt');
+    const send = document.querySelector('#send');
+    const status = document.querySelector('#status');
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const content = prompt.value.trim();
+      if (!content) return;
+      history.push({ role: 'user', content });
+      messages.insertAdjacentHTML('beforeend', `<div class="bubble user"></div>`);
+      messages.lastElementChild.textContent = content;
+      prompt.value = ''; send.disabled = true; status.textContent = 'در حال دریافت پاسخ…';
+      try {
+        const response = await fetch('http://localhost:8001/v1/chat/completions', {
+          method: 'POST', headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ messages: history, stream: false, session_id: 'browser-demo' })
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        const answer = data.choices?.[0]?.message?.content || 'پاسخی دریافت نشد.';
+        history.push({ role: 'assistant', content: answer });
+        messages.insertAdjacentHTML('beforeend', `<div class="bubble assistant"></div>`);
+        messages.lastElementChild.textContent = answer;
+        status.textContent = 'متصل به Geoq API';
+      } catch (error) {
+        messages.insertAdjacentHTML('beforeend', `<div class="bubble assistant"></div>`);
+        messages.lastElementChild.textContent = `ارتباط با API برقرار نشد: ${error.message}`;
+        status.textContent = 'API در دسترس نیست';
+      } finally { send.disabled = false; prompt.focus(); }
+    });
+  </script>
+</body>
+</html>

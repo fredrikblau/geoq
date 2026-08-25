@@ -69,4 +69,21 @@ Set `"stream": true` to receive Server-Sent Events. Each event contains a small 
 
 ## Visual showcase
 
+![Geoq Persian showcase](assets/geoq-showcase.png)
+
 Open [`t.html`](../t.html) locally in a browser to see the RTL Persian introduction card for جعوک. It is standalone and can be embedded into a future web client.
+
+The working chat client looks like this before connecting to the API:
+
+![Geoq browser chat demo](assets/geoq-chat-demo.png)
+
+## Working browser example
+
+Start the API, then serve the repository root:
+
+```bash
+python -m api
+python -m http.server 8080
+```
+
+Open [`examples/chat.html`](../examples/chat.html) at `http://localhost:8080/examples/chat.html`. The page sends real non-streaming requests to `http://localhost:8001/v1/chat/completions` and displays the Persian response. The browser API requires `CORS_ORIGINS=http://localhost:8080` in `.env`.

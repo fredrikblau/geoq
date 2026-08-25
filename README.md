@@ -6,6 +6,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-0b4f6c.svg)](LICENSE)
 [![Good first issues](https://img.shields.io/github/issues/fredrikblau/geoq/good%20first%20issue?label=good%20first%20issues)](https://github.com/fredrikblau/geoq/issues?q=is%3Aissue+is%3Aopen+label%3A%22good%20first%20issue%22)
 
+![Geoq Persian showcase](docs/assets/geoq-showcase.png)
+
 Geoq is an open-source local chat assistant for Qeshm Island and the surrounding islands of Hormoz, Hengam, Lark, and Naz. It helps residents and visitors find useful local knowledge in Persian: places to visit, food, accommodation, transport, services, shopping, culture, and practical travel advice.
 
 This project exists because local knowledge should be easy to access, easy to improve, and owned by the community that creates it. Geoq is a foundation for that work—not a replacement for local people, official information, or responsible travel planning.
@@ -46,6 +48,8 @@ The intended experience is a short, practical conversation—not a wall of gener
 ```
 
 The repository also includes [`t.html`](t.html), a small RTL Persian landing/showcase card for embedding in a front end. For complete request/response examples and expected behavior, see [docs/SHOWCASE.md](docs/SHOWCASE.md).
+
+For a working browser client, open [`examples/chat.html`](examples/chat.html) while the API is running. A dependency-free command-line client is available at [`examples/chat.py`](examples/chat.py).
 
 ## Architecture
 
@@ -90,6 +94,19 @@ curl http://localhost:8001/v1/chat/completions \
   -d '{"messages":[{"role":"user","content":"برای سفر به قشم چه جاهایی را پیشنهاد می‌کنی؟"}],"stream":false}'
 ```
 
+Or run the CLI example:
+
+```bash
+python examples/chat.py "برای یک روز در قشم برنامه سفر بده"
+```
+
+To try the browser example, serve the repository from its root so the page is easy to open:
+
+```bash
+python -m http.server 8080
+# open http://localhost:8080/examples/chat.html
+```
+
 For Redis-backed local development:
 
 ```bash
@@ -112,6 +129,7 @@ qa_hormoz.json              Hormoz seed knowledge
 qa_larak_hengam_naz.json    Lark, Hengam, and Naz seed knowledge
 embed_qa.py                 build the local Chroma index
 tests/                       fast data, text, and repository contract tests
+examples/                    standalone browser and CLI clients
 t.html                      standalone Persian RTL showcase card
 ```
 

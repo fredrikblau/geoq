@@ -45,3 +45,11 @@ def test_seed_records_have_categories_and_tags_for_filtering():
     for path in sorted(ROOT.glob("qa_*.json")):
         records = json.loads(path.read_text(encoding="utf-8"))
         assert all(record.get("category") and record.get("tags") for record in records), path.name
+
+
+def test_working_examples_target_the_real_api():
+    client = (ROOT / "examples" / "chat.py").read_text(encoding="utf-8")
+    browser = (ROOT / "examples" / "chat.html").read_text(encoding="utf-8")
+    assert "/v1/chat/completions" in client
+    assert "/v1/chat/completions" in browser
+    assert '"stream": False' in client
