@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-0b4f6c.svg)](LICENSE)
 [![Good first issues](https://img.shields.io/github/issues/fredrikblau/geoq/good%20first%20issue?label=good%20first%20issues)](https://github.com/fredrikblau/geoq/issues?q=is%3Aissue+is%3Aopen+label%3A%22good%20first%20issue%22)
 
-![Geoq Persian showcase](docs/assets/geoq-showcase.png)
+![Geoq browser chat](docs/assets/geoq-chat-demo.png)
 
 Geoq is an open-source local chat assistant for Qeshm Island and the surrounding islands of Hormoz, Hengam, Lark, and Naz. It helps residents and visitors find useful local knowledge in Persian: places to visit, food, accommodation, transport, services, shopping, culture, and practical travel advice.
 
@@ -124,9 +124,7 @@ Copy `.env.example` to `.env`. `GEMINI_API_KEY` is required for AI responses. `R
 ```text
 api/                         canonical FastAPI + LangGraph implementation
 docs/                        public architecture and showcase documentation
-qa_qeshm.json                Qeshm seed knowledge
-qa_hormoz.json              Hormoz seed knowledge
-qa_larak_hengam_naz.json    Lark, Hengam, and Naz seed knowledge
+data/knowledge/              reviewed local tourism seed data
 embed_qa.py                 build the local Chroma index
 tests/                       fast data, text, and repository contract tests
 examples/                    standalone browser and CLI clients

@@ -42,7 +42,7 @@ def test_showcase_examples_use_the_public_chat_endpoint():
 
 
 def test_seed_records_have_categories_and_tags_for_filtering():
-    for path in sorted(ROOT.glob("qa_*.json")):
+    for path in sorted((ROOT / "data" / "knowledge").glob("qa_*.json")):
         records = json.loads(path.read_text(encoding="utf-8"))
         assert all(record.get("category") and record.get("tags") for record in records), path.name
 

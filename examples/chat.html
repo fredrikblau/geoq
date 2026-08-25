@@ -42,6 +42,20 @@
     const send = document.querySelector('#send');
     const status = document.querySelector('#status');
 
+    // `?demo=1` is used only for the repository screenshot and does not
+    // change normal behavior. The normal page always starts with one greeting
+    // and sends real requests to the API below.
+    if (new URLSearchParams(location.search).has('demo')) {
+      history.push(
+        { role: 'user', content: 'برای یک روز در قشم کجاها بروم؟' },
+        { role: 'assistant', content: 'برای یک روز در قشم می‌توانی صبح را با دره ستاره‌ها و روستای برکه خلف شروع کنی، ظهر غذای دریایی محلی بخوری، عصر به تنگه چاهکوه بروی و غروب را در ساحل ناز بگذرانی. اگر با خودرو نیستی یا فصل سفرت را بگویی، برنامه را دقیق‌تر می‌کنم.' }
+      );
+      messages.insertAdjacentHTML('beforeend', '<div class="bubble user"></div><div class="bubble assistant"></div>');
+      messages.children[messages.children.length - 2].textContent = history[0].content;
+      messages.lastElementChild.textContent = history[1].content;
+      status.textContent = 'نمونه نمایشی · متصل به Geoq API';
+    }
+
     form.addEventListener('submit', async (event) => {
       event.preventDefault();
       const content = prompt.value.trim();

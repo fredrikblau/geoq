@@ -1,5 +1,6 @@
 # embed_qa.py
 import json
+from pathlib import Path
 from langchain_core.documents import Document
 from langchain_community.vectorstores import Chroma
 from langchain_community.embeddings import SentenceTransformerEmbeddings
@@ -8,10 +9,15 @@ import os
 # ------------------------------------------------------------------
 # 1. Load QA data
 # ------------------------------------------------------------------
-with open("qa_qeshm.json", "r", encoding="utf-8") as f:
-    qa_list = json.load(f)
+DATA_DIR = Path(__file__).parent / "data" / "knowledge"
+qa_files = sorted(DATA_DIR.glob("qa_*.json"))
+qa_list = [
+    item
+    for path in qa_files
+    for item in json.loads(path.read_text(encoding="utf-8"))
+]
 
-print(f"Loaded {len(qa_list)} QA pairs")
+print(f"Loaded {len(qa_list)} QA pairs from {len(qa_files)} files")
 
 # ------------------------------------------------------------------
 # 2. Create Documents (question + answer in content, metadata preserved)
@@ -52,7 +58,7 @@ embeddings = SentenceTransformerEmbeddings(
 # ------------------------------------------------------------------
 # 4. Create / Update Chroma DB
 # ------------------------------------------------------------------
-DB_PATH = "qeshm_db"
+DB_PATH = os.getenv("CHROMA_DIR", "qeshm_db")
 
 # Optional: delete old DB
 # import shutil; shutil.rmtree(DB_PATH, ignore_errors=True)

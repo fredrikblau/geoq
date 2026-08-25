@@ -17,7 +17,7 @@
 | Add or change the public API | `api/app.py` |
 | Change routing, retrieval, or refinement | `api/graph.py` and `api/utils.py` |
 | Change Persian behavior and safety rules | `api/prompts.py` |
-| Add local knowledge | `qa_*.json` |
+| Add local knowledge | `data/knowledge/qa_*.json` |
 | Rebuild embeddings | `embed_qa.py` |
 | Add fast regression coverage | `tests/` |
 | Explain a contributor-facing concept | `docs/` |

@@ -23,7 +23,7 @@ def test_project_name_is_geoq():
 
 
 def test_tourism_knowledge_files_have_a_consistent_schema():
-    for path in sorted(ROOT.glob("qa_*.json")):
+    for path in sorted((ROOT / "data" / "knowledge").glob("qa_*.json")):
         records = json.loads(path.read_text(encoding="utf-8"))
         assert records, path.name
         assert all({"id", "question", "answer"} <= set(record) for record in records)
@@ -31,7 +31,7 @@ def test_tourism_knowledge_files_have_a_consistent_schema():
 
 
 def test_tourism_knowledge_ids_are_unique_within_each_file():
-    for path in sorted(ROOT.glob("qa_*.json")):
+    for path in sorted((ROOT / "data" / "knowledge").glob("qa_*.json")):
         records = json.loads(path.read_text(encoding="utf-8"))
         ids = [record["id"] for record in records]
         assert len(ids) == len(set(ids)), path.name

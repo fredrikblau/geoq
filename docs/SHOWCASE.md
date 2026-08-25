@@ -64,7 +64,7 @@ Set `"stream": true` to receive Server-Sent Events. Each event contains a small 
 | --- | --- | --- |
 | «رستوران خوب معرفی کن» | Ask about cuisine, budget, and location | Clarification prompt and local data |
 | «بهترین مسیر امروز چیست؟» | Use fresh lookup when current conditions matter | Search integration and safety copy |
-| «دره ستاره‌ها کجاست؟» | Prefer local retrieval and Persian context | `qa_qeshm.json` |
+| «دره ستاره‌ها کجاست؟» | Prefer local retrieval and Persian context | `data/knowledge/qa_qeshm.json` |
 | «من غذای دریایی دوست دارم» then «کجا بروم؟» | Use conversation memory to personalize | Memory and fact extraction |
 
 ## Visual showcase
@@ -73,7 +73,7 @@ Set `"stream": true` to receive Server-Sent Events. Each event contains a small 
 
 Open [`t.html`](../t.html) locally in a browser to see the RTL Persian introduction card for جعوک. It is standalone and can be embedded into a future web client.
 
-The working chat client looks like this before connecting to the API:
+The working chat client is built from the same frontend in [`examples/chat.html`](../examples/chat.html):
 
 ![Geoq browser chat demo](assets/geoq-chat-demo.png)
 
