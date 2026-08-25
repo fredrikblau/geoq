@@ -1,31 +1,88 @@
-# Geoq
+# Geoq (جعوک)
 
-Geoq (جعوک) is an open-source, Persian-first local travel assistant for Qeshm Island and its nearby islands: Hormoz, Lark, Hengam, and Naz Island. It combines a FastAPI-compatible chat API, LangGraph orchestration, retrieval over local tourism knowledge, optional Google Search grounding, and Redis-backed conversation memory.
+> A Persian-first, community-built local guide for discovering Qeshm Island.
 
-The project is designed for people who know the island and want to make reliable local knowledge easier to discover for residents and visitors.
+[![CI](https://github.com/fredrikblau/geoq/actions/workflows/ci.yml/badge.svg)](https://github.com/fredrikblau/geoq/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-0b4f6c.svg)](LICENSE)
+[![Good first issues](https://img.shields.io/github/issues/fredrikblau/geoq/good%20first%20issue?label=good%20first%20issues)](https://github.com/fredrikblau/geoq/issues?q=is%3Aissue+is%3Aopen+label%3A%22good%20first%20issue%22)
 
-## What it does
+Geoq is an open-source local chat assistant for Qeshm Island and the surrounding islands of Hormoz, Hengam, Lark, and Naz. It helps residents and visitors find useful local knowledge in Persian: places to visit, food, accommodation, transport, services, shopping, culture, and practical travel advice.
 
-- Answers in friendly Persian and keeps Qeshm at the center of the experience.
-- Exposes an OpenAI-compatible `POST /v1/chat/completions` endpoint with streaming support.
-- Routes questions between local retrieval, fresh web-grounded answers, and general conversation.
-- Remembers short conversations and can personalize recommendations.
-- Runs locally without Redis or model credentials for health checks and development of the API shell.
+This project exists because local knowledge should be easy to access, easy to improve, and owned by the community that creates it. Geoq is a foundation for that work—not a replacement for local people, official information, or responsible travel planning.
 
-## Quick start
+## Why Geoq?
+
+Generic travel assistants often miss the details that matter on an island: seasonal routes, local names, nearby alternatives, Persian context, and the difference between a recommendation and an official fact. Geoq combines a local knowledge base with an AI conversation layer so contributors can improve the answers directly.
+
+## Features
+
+- **Persian-first experience** — friendly Persian responses with Arabic/Persian text normalization and RTL-ready showcase UI.
+- **Local knowledge retrieval** — Qeshm-focused question/answer data indexed for semantic search.
+- **Multi-island coverage** — Qeshm, Hormoz, Hengam, Lark, and Naz Island seed data.
+- **Smart routing** — chooses local retrieval, fresh web-grounded lookup, or general conversation based on the question.
+- **Conversation memory** — short-term history with optional Redis persistence and an in-memory fallback for development.
+- **Personalized recommendations** — uses conversation context and user preferences when available.
+- **Clarifying questions** — asks for missing details such as budget, timing, location, or food preference instead of guessing.
+- **RAG confidence fallback** — falls back when local retrieval is weak rather than presenting a low-confidence match as fact.
+- **Quality gate and refinement** — can evaluate and improve generated answers before finalizing them.
+- **OpenAI-compatible API** — supports normal JSON responses and Server-Sent Events streaming at `/v1/chat/completions`.
+- **Contributor-friendly data** — tourism records are plain JSON, reviewable in pull requests, and protected by schema and uniqueness tests.
+- **Local-first development** — health checks and the API shell can run before credentials, Redis, or model weights are available.
+
+## A small showcase
+
+The intended experience is a short, practical conversation—not a wall of generic travel copy:
+
+```text
+کاربر: برای یک روز در قشم کجاها بروم؟
+
+جعوک: اگر اولین بار است به قشم می‌آیی، می‌توانی روزت را این‌طور تقسیم کنی:
+۱. صبح: دره ستاره‌ها و روستای برکه خلف
+۲. ظهر: ناهار دریایی در یک رستوران محلی
+۳. عصر: تنگه چاهکوه
+۴. غروب: ساحل ناز، با توجه به زمان جزر و مد
+
+اگر با خودرو نیستی یا فصل سفرت را بگویی، برنامه را دقیق‌تر و عملی‌تر می‌کنم.
+```
+
+The repository also includes [`t.html`](t.html), a small RTL Persian landing/showcase card for embedding in a front end. For complete request/response examples and expected behavior, see [docs/SHOWCASE.md](docs/SHOWCASE.md).
+
+## Architecture
+
+```text
+Client / web UI
+      │
+      ▼
+FastAPI ── /health, /v1/models, /v1/chat/completions
+      │
+      ▼
+LangGraph conversation pipeline
+      ├── history + memory + facts
+      ├── route: local RAG / fresh lookup / chat
+      ├── retrieval + reranking + confidence fallback
+      ├── Persian answer generation
+      └── quality gate → refinement → saved answer
+      │                 │
+      ▼                 ▼
+Chroma local index     Redis (optional conversation state)
+```
+
+Read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the data flow, boundaries, and extension points. The detailed LangGraph notes remain in [`api/`](api/).
+
+## Run it locally
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/geoq.git
+git clone https://github.com/fredrikblau/geoq.git
 cd geoq
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 cp .env.example .env
-# Add GEMINI_API_KEY to .env for chat responses
-uvicorn api.app:app --reload --port 8001
+# Add GEMINI_API_KEY to .env for AI responses
+python -m api
 ```
 
-Check the service at `http://localhost:8001/health`. A minimal request looks like:
+Open `http://localhost:8001/health`. A request without streaming:
 
 ```bash
 curl http://localhost:8001/v1/chat/completions \
@@ -33,25 +90,41 @@ curl http://localhost:8001/v1/chat/completions \
   -d '{"messages":[{"role":"user","content":"برای سفر به قشم چه جاهایی را پیشنهاد می‌کنی؟"}],"stream":false}'
 ```
 
-For Redis and a containerized setup, use `docker compose up --build`.
+For Redis-backed local development:
+
+```bash
+docker compose up --build
+```
+
+To build the local Chroma index from seed data, run `python embed_qa.py`. The generated `qeshm_db*` directories are intentionally ignored by Git.
 
 ## Configuration
 
-Copy `.env.example` to `.env`. `GEMINI_API_KEY` is required for AI answers. `REDIS_URL` is optional; the service falls back to an in-memory store for local development. The local Chroma database is intentionally ignored by Git because it contains generated model state.
+Copy `.env.example` to `.env`. `GEMINI_API_KEY` is required for AI responses. `REDIS_URL` is optional; Geoq falls back to an in-memory store. `CORS_ORIGINS` accepts a comma-separated list of allowed browser origins.
 
-## Project layout
+## Repository map
 
 ```text
-api/                 FastAPI app and LangGraph pipeline
-qa_*.json            Seed tourism knowledge for local indexing
-embed_qa.py          Build the local Chroma index
-tests/               Fast, dependency-light behavior tests
+api/                         canonical FastAPI + LangGraph implementation
+docs/                        public architecture and showcase documentation
+qa_qeshm.json                Qeshm seed knowledge
+qa_hormoz.json              Hormoz seed knowledge
+qa_larak_hengam_naz.json    Lark, Hengam, and Naz seed knowledge
+embed_qa.py                 build the local Chroma index
+tests/                       fast data, text, and repository contract tests
+t.html                      standalone Persian RTL showcase card
 ```
 
 ## Contributing
 
-Issues, Persian copy improvements, verified local recommendations, tests, and translations are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) before opening a pull request. Please do not commit API keys, private user conversations, or unverified business information.
+The best first contributions are verified local knowledge, Persian copy improvements, API tests, translations, and documentation. Browse the [good first issues](https://github.com/fredrikblau/geoq/issues?q=is%3Aissue+is%3Aopen+label%3A%22good%20first%20issue%22), read [CONTRIBUTING.md](CONTRIBUTING.md), and comment on an issue before starting substantial work.
+
+Please do not commit API keys, private user conversations, scraped personal data, or unverified business claims. For changing information such as prices, opening hours, and transport schedules, include a source or verification date in the pull request.
+
+## Project status and limitations
+
+Geoq is an early open-source project. It is not yet a verified real-time travel authority, and AI answers can be wrong. Users should confirm safety, weather, transport, prices, opening hours, and official requirements with current local or official sources.
 
 ## License
 
-Geoq is released under the MIT License. See [LICENSE](LICENSE).
+Geoq is released under the [MIT License](LICENSE).
