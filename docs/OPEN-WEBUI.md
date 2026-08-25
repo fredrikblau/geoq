@@ -1,16 +1,15 @@
 # Open WebUI integration
 
-Geoq’s intended full frontend is the customized [`geoq` branch of the Open WebUI fork](https://github.com/fredrikblau/open-webui/tree/geoq). It contains the Geoq branding and Persian-facing UI changes. It remains a separate repository so Open WebUI’s upstream history and frontend development stay independent from Geoq’s API and local knowledge.
+Geoq’s full frontend is the customized [`geoq` branch of the Open WebUI fork](https://github.com/fredrikblau/open-webui/tree/geoq), bundled under `frontend/open-webui`. It contains the Geoq branding and Persian-facing UI changes and is available in every Geoq clone.
 
 ## Fastest setup with Docker Compose
 
-Clone both repositories side by side, then run this from the Geoq repository root:
+Run this from the Geoq repository root:
 
 ```bash
-git clone --branch geoq --depth 1 https://github.com/fredrikblau/open-webui.git ../open-webui
 cp .env.example .env
 # Add GEMINI_API_KEY to .env
-OPEN_WEBUI_DIR=../open-webui docker compose -f docker-compose.yml -f docker-compose.open-webui.yml up --build
+docker compose -f docker-compose.yml -f docker-compose.open-webui.yml up --build
 ```
 
 Then open [http://localhost:3000](http://localhost:3000). Open WebUI talks to the Geoq API through the Compose service name `geoq` at `http://geoq:8001/v1`.
@@ -46,18 +45,18 @@ In the Open WebUI admin panel, the same connection can be added under **Settings
 
 ## Development workflow
 
-The frontend is intentionally external to this repository. To work on the customized branch:
+The bundled frontend is a snapshot of the customized `geoq` branch. To update it intentionally:
 
 ```bash
-git clone --branch geoq https://github.com/fredrikblau/open-webui.git ../open-webui
-cd ../open-webui
-git checkout geoq
+git clone --branch geoq --depth 1 https://github.com/fredrikblau/open-webui.git /tmp/open-webui-geoq
+rsync -a --delete --exclude .git /tmp/open-webui-geoq/ frontend/open-webui/
 ```
 
-To update the external frontend locally, pull the latest `geoq` branch:
+Then review the diff and commit the bundled update:
 
 ```bash
-git -C ../open-webui pull origin geoq
+git add frontend/open-webui
+git commit -m "chore: update bundled Open WebUI geoq frontend"
 ```
 
-Keep frontend-specific changes in the Open WebUI fork. Keep Geoq API, knowledge, and integration documentation in this repository.
+Keep frontend-specific changes in the bundled frontend and preserve the upstream Open WebUI license and notices. Keep Geoq API, knowledge, and integration documentation in this repository.

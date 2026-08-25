@@ -61,7 +61,7 @@ The intended experience is a short, practical conversation—not a wall of gener
 اگر با خودرو نیستی یا فصل سفرت را بگویی، برنامه را دقیق‌تر و عملی‌تر می‌کنم.
 ```
 
-The production-oriented frontend is the customized [Open WebUI `geoq` branch](https://github.com/fredrikblau/open-webui/tree/geoq), kept as a separate repository. The repository also includes [`t.html`](t.html), a small standalone RTL Persian landing/showcase card. See [docs/OPEN-WEBUI.md](docs/OPEN-WEBUI.md) for the full connection setup and [docs/SHOWCASE.md](docs/SHOWCASE.md) for API examples.
+The production-oriented frontend is the customized [Open WebUI `geoq` branch](https://github.com/fredrikblau/open-webui/tree/geoq), bundled in `frontend/open-webui`. The repository also includes [`t.html`](t.html), a small standalone RTL Persian landing/showcase card. See [docs/OPEN-WEBUI.md](docs/OPEN-WEBUI.md) for the full connection setup and [docs/SHOWCASE.md](docs/SHOWCASE.md) for API examples.
 
 For a working browser client, open [`examples/chat.html`](examples/chat.html) while the API is running. A dependency-free command-line client is available at [`examples/chat.py`](examples/chat.py).
 
@@ -86,6 +86,8 @@ Chroma local index     Redis (optional conversation state)
 ```
 
 Read [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for the data flow, boundaries, and extension points. The detailed LangGraph notes remain in [`api/`](api/).
+
+To adapt Geoq for another city, follow [docs/CUSTOMIZE-CITY.md](docs/CUSTOMIZE-CITY.md). The configuration and knowledge format are designed around replaceable city packs.
 
 ## Run it locally
 
@@ -130,8 +132,7 @@ docker compose up --build
 To run Geoq together with the customized Open WebUI frontend:
 
 ```bash
-git clone --branch geoq --depth 1 https://github.com/fredrikblau/open-webui.git ../open-webui
-OPEN_WEBUI_DIR=../open-webui \
+docker compose -f docker-compose.yml -f docker-compose.open-webui.yml up --build
 docker compose -f docker-compose.yml -f docker-compose.open-webui.yml up --build
 ```
 
@@ -145,7 +146,7 @@ Copy `.env.example` to `.env`. `GEMINI_API_KEY` is required for AI responses. `R
 
 ```text
 api/                         canonical FastAPI + LangGraph implementation
-Open WebUI (external)         customized frontend in `fredrikblau/open-webui:geoq`
+frontend/open-webui           bundled customized Open WebUI frontend
 docs/                        public architecture and showcase documentation
 data/knowledge/              reviewed local tourism seed data
 embed_qa.py                 build the local Chroma index

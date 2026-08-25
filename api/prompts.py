@@ -9,6 +9,13 @@ PRESERVES: All original Geoq/جعوک character and behavior
 """
 
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from .config import (
+    GEOQ_CREATOR_TEXT,
+    GEOQ_NAME,
+    GEOQ_OFFICIAL_URL,
+    GEOQ_REGION,
+    GEOQ_SUPPORTED_AREAS,
+)
 
 # ============================================================================
 # Main System Prompt (Enhanced - Preserves Original Character)
@@ -101,6 +108,23 @@ BEHAVIORAL GUIDELINES
 END OF SYSTEM PROMPT
 """
 
+
+def _localize_prompt(prompt: str) -> str:
+    """Replace Qeshm defaults with the configured city pack identity."""
+    return (
+        prompt.replace("جزیره قشم هرمز لارک هنگام جزیره ناز", GEOQ_SUPPORTED_AREAS)
+        .replace("قشم و اطرافش", f"{GEOQ_REGION} و مناطق اطرافش")
+        .replace("ساکنین جزیره قشم", f"ساکنان {GEOQ_REGION}")
+        .replace("من توسط دو نفر از ساکنین جزیره قشم ساخته شدم.", GEOQ_CREATOR_TEXT)
+        .replace("من جعوک هستم", f"من {GEOQ_NAME} هستم")
+        .replace("دستیار مجازی قشم", f"دستیار مجازی {GEOQ_REGION}")
+        .replace("جزیره قشم سوال داری", f"{GEOQ_REGION} سوال داری")
+        .replace("به geoq.ir هدایت کن", f"به {GEOQ_OFFICIAL_URL} هدایت کن")
+    )
+
+
+SYSTEM_PROMPT = _localize_prompt(SYSTEM_PROMPT)
+
 # ============================================================================
 # Main Chat Prompt Template (Enhanced)
 # ============================================================================
@@ -128,12 +152,12 @@ def get_main_prompt() -> ChatPromptTemplate:
 # ============================================================================
 
 SUMMARIZE_PROMPT = ChatPromptTemplate.from_template(
-    """خلاصه این مکالمه را در 1-2 جمله فارسی بنویس و روی موضوعات کلیدی، سوالات کاربر، و هر زمینه‌ای درباره جزیره قشم تمرکز کن. 
+    _localize_prompt("""خلاصه این مکالمه را در 1-2 جمله فارسی بنویس و روی موضوعات کلیدی، سوالات کاربر، و هر زمینه‌ای درباره جزیره قشم تمرکز کن.
     کوتاه و مرتبط نگه‌دار برای پاسخ‌های آینده.
     
     تاریخچه:
     {history_text}
-    """
+    """)
 )
 
 
@@ -208,7 +232,7 @@ CLARIFICATION_CHECK_PROMPT = ChatPromptTemplate.from_template(
 # ============================================================================
 
 ROUTING_PROMPT_TEMPLATE = ChatPromptTemplate.from_template(
-    """بر اساس سوال کاربر، مسیر مناسب را انتخاب کن:
+    _localize_prompt("""بر اساس سوال کاربر، مسیر مناسب را انتخاب کن:
 
     - "rag": اگر سوال درباره اطلاعات محلی قشم است (رستوران‌ها, هتل‌ها, جاذبه‌ها, مکان‌های خاص, ...)
     - "google": اگر نیاز به اطلاعات تازه یا بیرونی است (اخبار, رویدادها, قیمت‌های جدید, اطلاعات به‌روز, ...)
@@ -223,7 +247,7 @@ ROUTING_PROMPT_TEMPLATE = ChatPromptTemplate.from_template(
     
     پاسخ را به این فرمت JSON بده:
     {{"route": "rag/google/chat", "refined_query": "سوال بازنویسی‌شده با در نظر گرفتن زمینه"}}
-    """
+    """)
 )
 
 
@@ -288,6 +312,8 @@ GOOGLE_SEARCH_SYSTEM_PROMPT = """
 
 سوال کاربر: {query}
 """
+
+GOOGLE_SEARCH_SYSTEM_PROMPT = _localize_prompt(GOOGLE_SEARCH_SYSTEM_PROMPT)
 
 
 # ============================================================================

@@ -28,7 +28,7 @@ from .utils import (
     llm,
 )
 from langchain_core.messages import AIMessage
-from .config import PORT, CORS_ORIGINS
+from .config import GEOQ_NAME, PORT, CORS_ORIGINS
 
 # Import the compiled LangGraph conversation graph
 from .graph import conversation_graph, ConversationState
@@ -39,7 +39,7 @@ from .graph import conversation_graph, ConversationState
 # ============================================================================
 
 app = FastAPI(
-    title="Geoq API",
+    title=f"{GEOQ_NAME} API",
     description="Persian-first local travel assistant for Qeshm Island",
     version="0.1.0",
 )

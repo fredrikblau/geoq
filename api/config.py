@@ -3,6 +3,18 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# City-pack configuration. Replace these values, prompts, and the files under
+# data/knowledge when adapting Geoq for another city or region.
+GEOQ_NAME = os.getenv("GEOQ_NAME", "جعوک")
+GEOQ_REGION = os.getenv("GEOQ_REGION", "قشم")
+GEOQ_SUPPORTED_AREAS = os.getenv(
+    "GEOQ_SUPPORTED_AREAS", "جزیره قشم، هرمز، لارک، هنگام و جزیره ناز"
+)
+GEOQ_OFFICIAL_URL = os.getenv("GEOQ_OFFICIAL_URL", "geoq.ir")
+GEOQ_CREATOR_TEXT = os.getenv(
+    "GEOQ_CREATOR_TEXT", "من توسط ساکنان محلی ساخته شده‌ام."
+)
+
 # --- Gemini API ---
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 # Importing the package must remain safe for local development, tests, and

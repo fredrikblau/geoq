@@ -58,8 +58,18 @@ def test_working_examples_target_the_real_api():
 def test_open_webui_integration_uses_external_geoq_branch_and_backend_url():
     compose = (ROOT / "docker-compose.open-webui.yml").read_text(encoding="utf-8")
     docs = (ROOT / "docs" / "OPEN-WEBUI.md").read_text(encoding="utf-8")
+    frontend = ROOT / "frontend" / "open-webui"
+    assert frontend.is_dir()
+    assert (frontend / "package.json").is_file()
     assert not (ROOT / ".gitmodules").exists()
-    assert "open-webui.git" in docs
-    assert "OPEN_WEBUI_DIR" in compose
+    assert "bundled" in docs
     assert "OPENAI_API_BASE_URLS: http://geoq:8001/v1" in compose
     assert "docker-compose.open-webui.yml" in docs
+
+
+def test_city_pack_configuration_is_documented():
+    env_example = (ROOT / ".env.example").read_text(encoding="utf-8")
+    guide = (ROOT / "docs" / "CUSTOMIZE-CITY.md").read_text(encoding="utf-8")
+    for key in ("GEOQ_NAME", "GEOQ_REGION", "GEOQ_SUPPORTED_AREAS"):
+        assert key in env_example
+        assert key in guide
