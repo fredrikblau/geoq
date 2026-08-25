@@ -1,0 +1,237 @@
+<!--
+  Jaoq (جعوک) — Mobile-first RTL landing snippet
+  - Production-ready single-file HTML + Tailwind (Play CDN)
+  - Designed to be embedded into an auth page (before/alongside login form)
+  - Persian (RTL) with Vazirmatn as preferred font (fallbacks provided)
+-->
+
+<!doctype html>
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>جعوک — راهنمای سفر به قشم</title>
+
+    <!-- Tailwind CDN (Play) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Prefer Vazirmatn if available; fall back to system fonts -->
+    <!-- If you have a hosted Vazirmatn font, replace/add the proper @font-face or link -->
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --deep-blue: #0B4F6C;
+            /* deep blue */
+            --turquoise: #0fb3a6;
+            /* turquoise accent */
+            --muted: #7b94a1;
+            --card: #ffffff;
+        }
+
+        html,
+        body {
+            height: 100%
+        }
+
+        body {
+            font-family: "Vazirmatn", "Vazir", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(180deg, rgba(11, 79, 108, 0.04) 0%, rgba(15, 179, 166, 0.02) 100%);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            color: #05303a;
+        }
+
+        /* small, subtle "wave" background using SVG */
+        .wave-bg {
+            background-image: radial-gradient(circle at 10% 20%, rgba(15, 179, 166, 0.06) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(11, 79, 108, 0.04) 0%, transparent 18%);
+        }
+
+        /* Simple fade-up animation */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-up {
+            animation: fadeUp 560ms cubic-bezier(.22, .9, .3, 1) both;
+        }
+
+        /* tiny shimmer on CTA */
+        @keyframes pulseSoft {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+
+            50% {
+                transform: translateY(-2px);
+                opacity: .98;
+            }
+
+            100% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .pulse-soft {
+            animation: pulseSoft 2.6s ease-in-out infinite;
+        }
+
+        /* Ensure embedded container doesn't overflow */
+        .jaoq-card {
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Respect RTL for small components */
+        .rtl-text {
+            direction: rtl;
+            text-align: right;
+        }
+
+        /* Accessibility focus */
+        .focus-ring:focus {
+            outline: 3px solid rgba(15, 179, 166, 0.14);
+            outline-offset: 2px;
+            border-radius: 0.5rem;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center p-4">
+
+    <!-- Container to embed on an auth screen.
+       Designed to be narrow so it can appear next to a login form.
+  -->
+    <aside id="jaoq-landing"
+        class="jaoq-card w-full max-w-md mx-auto rounded-2xl shadow-lg wave-bg p-4 sm:p-6 bg-transparent"
+        aria-labelledby="jaoq-title">
+        <div class="backdrop-blur-sm bg-white/80 rounded-xl p-4 sm:p-6 space-y-4">
+            <!-- Logo + small badge -->
+            <header class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <!-- Logo placeholder -->
+                    <div
+                        class="flex-none w-12 h-12 rounded-xl bg-gradient-to-br from-[var(--deep-blue)] to-[var(--turquoise)] flex items-center justify-center shadow-md animate-fade-up">
+                        <!-- simple SVG mark + جعوک text -->
+                        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" aria-hidden="true" class="block">
+                            <rect x="0" y="0" width="24" height="24" rx="5" fill="white" opacity="0.06"></rect>
+                            <path d="M6 12c1.5-4 8-5 10-2" stroke="white" stroke-width="1.6" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                            <circle cx="7.6" cy="8.4" r="0.8" fill="white" />
+                        </svg>
+                    </div>
+
+                    <div class="leading-tight">
+                        <div id="jaoq-title" class="font-semibold text-lg text-[var(--deep-blue)] rtl-text">جعوک</div>
+                        <div class="text-xs text-[var(--muted)] rtl-text">راهنمای بومی هوشمند</div>
+                    </div>
+                </div>
+
+                <!-- small chip to indicate free -->
+                <div class="self-start">
+                    <span
+                        class="inline-block px-3 py-1 text-xs font-medium rounded-full bg-[var(--turquoise)]/10 text-[var(--turquoise)] rtl-text">
+                        کاملاً رایگان
+                    </span>
+                </div>
+            </header>
+
+            <!-- Decorative illustration / abstract wave (SVG) -->
+            <div class="w-full overflow-hidden rounded-lg">
+                <svg viewBox="0 0 800 140" class="w-full h-14 sm:h-20" preserveAspectRatio="none" role="img"
+                    aria-hidden="true">
+                    <defs>
+                        <linearGradient id="g1" x1="0" x2="1">
+                            <stop offset="0" stop-color="#0fb3a6" stop-opacity="0.12" />
+                            <stop offset="1" stop-color="#0b4f6c" stop-opacity="0.04" />
+                        </linearGradient>
+                    </defs>
+                    <path d="M0,60 C160,10 240,130 400,90 C560,50 640,110 800,80 L800 140 L0 140 Z" fill="url(#g1)" />
+                </svg>
+            </div>
+
+            <!-- Content: use EXACT text blocks provided by user, preserved -->
+            <main class="space-y-3 rtl-text">
+                <!-- Main heading (exact first line used as heading) -->
+                <h1
+                    class="text-[1.05rem] sm:text-[1.125rem] font-bold text-[var(--deep-blue)] leading-tight animate-fade-up">
+                    جعوک؛ راهنمایی برای کشف، نه فقط یک مسیر
+                </h1>
+
+                <p class="text-sm text-slate-700 leading-relaxed animate-fade-up" style="animation-delay: 60ms;">
+                    جعوک یک هوش مصنوعی برای سفرهای پرماجرا است. در گام نخست، جعوک با تمرکز بر قشم و جزایر اطراف، به
+                    گردشگران و ساکنان کمک می‌کند تا در کوتاه‌ترین زمان، به دقیق‌ترین و کاربردی‌ترین اطلاعات دسترسی داشته
+                    باشند.
+                </p>
+
+                <p class="text-sm text-slate-700 leading-relaxed animate-fade-up" style="animation-delay: 120ms;">
+                    جعوک، راهنمای بومی هوشمند شما در سفر به قشم است. از جاذبه‌های طبیعی و تاریخی گرفته تا فرهنگ و آداب
+                    محلی، اقامتگاه‌ها، رستوران‌ها، کافه‌ها و مراکز خرید — هر آنچه باید پیش از سفر بدانید در جعوک گردآوری
+                    شده است.
+                </p>
+
+                <p class="text-sm text-slate-700 leading-relaxed animate-fade-up" style="animation-delay: 180ms;">
+                    با جعوک، سفر به قشم و جزایر اطراف تجربه‌ای آسان‌تر، آگاهانه‌تر و لذت‌بخش‌تر خواهد بود.
+                </p>
+
+                <p class="text-sm text-slate-700 leading-relaxed animate-fade-up" style="animation-delay: 240ms;">
+                    جعوک تنها برای گردشگران نیست. می‌توانید با جعوک به‌سرعت تعمیرکاران تخصصی، خدمات درمانی، فروشگاه‌ها،
+                    مراکز اداری و سایر خدمات شهری را پیدا کنید.
+                </p>
+
+                <p class="text-sm text-slate-700 leading-relaxed animate-fade-up" style="animation-delay: 300ms;">
+                    کسب‌وکارهای محلی نیز می‌توانند با حضور در جعوک، بهتر دیده شوند و مشتریان بیشتری جذب کنند.
+                </p>
+
+                <p class="text-sm text-slate-700 leading-relaxed animate-fade-up" style="animation-delay: 360ms;">
+                    تمامی این امکانات به‌صورت کاملاً رایگان در اختیار کاربران و صاحبان کسب‌وکار قرار دارد.
+                </p>
+            </main>
+
+            <!-- Minimal extra UI (non-intrusive) -->
+            <footer class="pt-2 flex items-center justify-between gap-3">
+                <div class="text-xs text-[var(--muted)] rtl-text">
+                    طراحی: دوستان محلی • قابل نصب در صفحه ورود
+                </div>
+
+                <!-- Tiny CTA that blends into auth flow; non-disruptive -->
+                <div>
+                    <a href="#"
+                        class="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium rounded-lg focus-ring shadow-sm bg-[var(--deep-blue)] text-white hover:opacity-95 pulse-soft"
+                        role="button" aria-label="بیشتر بدانید درباره جعوک" onclick="return false;">
+                        اطلاعات بیشتر
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                            <path d="M8 5l8 7-8 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </a>
+                </div>
+            </footer>
+        </div>
+    </aside>
+
+    <!-- Small inline script to stagger animation classes for nicer entrance when embedded -->
+    <script>
+        (function () {
+            // Add small staggered class delays via inline styles for children that have animate-fade-up
+            const items = document.querySelectorAll('#jaoq-landing .animate-fade-up');
+            items.forEach((el, i) => {
+                const delay = (i * 60) + 80; // ms
+                el.style.animationDelay = delay + 'ms';
+            });
+        })();
+    </script>
+</body>
+
+</html>

@@ -1,3 +1,4 @@
+# graph.py
 """
 Enhanced LangGraph with:
 1. Clarification step
@@ -12,39 +13,8 @@ from langchain_core.messages import HumanMessage, AIMessage
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.documents import Document
 from langgraph.graph import StateGraph, END
-import time
-from typing import TypedDict, List, Literal, Optional
-from langchain_core.messages import HumanMessage, AIMessage
-from langchain_community.chat_message_histories import ChatMessageHistory
-from langchain_core.documents import Document
-from langgraph.graph import StateGraph, END
 
-from .utils import (
-    logger,
-    normalize_farsi,
-    get_session_history,
-    save_session_history,
-    get_user_facts,
-    get_selective_history,
-    llm_summarize_memory,
-    route_and_refine,
-    retriever,
-    rerank_docs,
-    vector_db,
-    build_context_from_docs,
-    google_search_summary,
-    llm,
-)
-from .utils import (
-    evaluate_answer_quality,
-    refine_query_for_retry,
-    should_refine_answer,
-    get_refinement_strategy,
-)
-from .prompts import build_context_block
-from .config import MAX_HISTORY_LEN, MAX_REFINEMENT_ITERATIONS
-
-from .utils import (
+from utils import (
     logger,
     normalize_farsi,
     get_session_history,
@@ -63,8 +33,8 @@ from .utils import (
     chain_with_history,
     llm,
 )
-from .prompts import build_context_block
-from .config import MAX_HISTORY_LEN
+from prompts import build_context_block
+from config import MAX_HISTORY_LEN
 
 
 # ============================================================================
@@ -73,7 +43,7 @@ from .config import MAX_HISTORY_LEN
 
 
 class ConversationState(TypedDict, total=False):
-    """Enhanced state with self-correction loop."""
+    """Enhanced conversation state with personalization."""
 
     # Input & Session
     session_id: str
@@ -83,9 +53,15 @@ class ConversationState(TypedDict, total=False):
     # History & Memory
     history: ChatMessageHistory
     memory_summary: str
-    user_facts: dict
-    recent_history_text: str
-    earlier_summary: str
+
+    # Personalization 🆕
+    user_facts: dict  # Extracted preferences, past mentions, etc.
+    recent_history_text: str  # Last 3-4 messages verbatim
+    earlier_summary: str  # Compressed older history
+
+    # Clarification 🆕
+    needs_clarification: bool
+    clarification_questions: str
 
     # Routing & Refinement
     route: Literal["rag", "google", "chat"]
@@ -102,16 +78,9 @@ class ConversationState(TypedDict, total=False):
     google_answer: str
 
     # LLM Generation
-    context_block: str
+    context_block: str  # Complete context for LLM
     final_input: str
     llm_output: str
-
-    # 🆕 Quality Gate & Iteration
-    iteration_count: int  # Current retry iteration (0 = first attempt)
-    quality_evaluation: dict  # {quality_score, issue_type, recommendation, reason}
-    previous_answers: List[str]  # History of attempts
-    refinement_history: List[dict]  # [{iteration, issue, strategy}]
-    final_quality_score: float  # Quality of final answer
 
     # Error Handling
     error_info: Optional[str]
@@ -128,7 +97,9 @@ class ConversationState(TypedDict, total=False):
 
 
 def load_history_memory_and_facts(state: ConversationState) -> ConversationState:
-    """Load history, generate memory summary, extract facts."""
+    """
+    Enhanced: Load history, generate memory summary, extract facts, selective history.
+    """
     session_id = state["session_id"]
     messages = state["messages_from_request"]
     user_input = state["user_input_raw"]
@@ -136,9 +107,11 @@ def load_history_memory_and_facts(state: ConversationState) -> ConversationState
     logger.info("Node: load_history_memory_and_facts", extra={"session_id": session_id})
 
     try:
+        # Load existing history
         history = get_session_history(session_id)
         old_len = len(history.messages)
 
+        # Re-sync history from request
         history.messages.clear()
         for msg in messages[:-1]:
             norm_content = (
@@ -151,15 +124,23 @@ def load_history_memory_and_facts(state: ConversationState) -> ConversationState
             elif msg["role"] == "assistant":
                 history.add_message(AIMessage(content=norm_content))
 
+        # Add new user input
         history.add_message(HumanMessage(content=user_input))
 
+        # Cap history length
         if len(history.messages) > MAX_HISTORY_LEN:
             history.messages = history.messages[-MAX_HISTORY_LEN:]
 
+        # Save updated history
         save_session_history(session_id, history)
 
+        # Generate memory summary (also triggers fact extraction)
         memory_text = llm_summarize_memory(session_id, history)
+
+        # Get user facts
         user_facts = get_user_facts(session_id)
+
+        # Get selective history (recent verbatim + earlier compressed)
         recent_history_text, earlier_summary = get_selective_history(
             history, recent_count=4
         )
@@ -169,6 +150,9 @@ def load_history_memory_and_facts(state: ConversationState) -> ConversationState
             extra={
                 "session_id": session_id,
                 "history_len": len(history.messages),
+                "memory_len": len(memory_text),
+                "facts_count": len(user_facts),
+                "recent_history_len": len(recent_history_text),
             },
         )
 
@@ -179,9 +163,6 @@ def load_history_memory_and_facts(state: ConversationState) -> ConversationState
             "user_facts": user_facts,
             "recent_history_text": recent_history_text,
             "earlier_summary": earlier_summary,
-            "iteration_count": 0,  # 🆕 Initialize iteration counter
-            "previous_answers": [],  # 🆕 Initialize answer history
-            "refinement_history": [],  # 🆕 Initialize refinement history
         }
 
     except Exception as e:
@@ -194,9 +175,8 @@ def load_history_memory_and_facts(state: ConversationState) -> ConversationState
             "history": ChatMessageHistory(),
             "memory_summary": "",
             "user_facts": {},
-            "iteration_count": 0,
-            "previous_answers": [],
-            "refinement_history": [],
+            "recent_history_text": "",
+            "earlier_summary": "",
         }
 
 
@@ -267,89 +247,40 @@ def check_clarification_needed(state: ConversationState) -> ConversationState:
 
 
 def route_and_refine_query(state: ConversationState) -> ConversationState:
-    """Route query, with refinement on retry iterations."""
+    """
+    Enhanced: Uses user facts and selective history for better routing.
+    """
     session_id = state["session_id"]
     user_input = state["user_input_raw"]
     memory = state.get("memory_summary", "")
     history = state.get("history", ChatMessageHistory())
     user_facts = state.get("user_facts", {})
-    iteration_count = state.get("iteration_count", 0)
-    quality_eval = state.get("quality_evaluation", {})
-    previous_answers = state.get("previous_answers", [])
 
-    logger.info(
-        "Node: route_and_refine_query",
-        extra={"session_id": session_id, "iteration": iteration_count},
-    )
+    logger.info("Node: route_and_refine_query", extra={"session_id": session_id})
 
     try:
-        # 🆕 If this is a retry iteration, refine the query
-        if iteration_count > 0 and quality_eval:
-            logger.info(
-                "Retry iteration - refining query",
-                extra={
-                    "session_id": session_id,
-                    "iteration": iteration_count,
-                    "issue_type": quality_eval.get("issue_type", "unknown"),
-                },
-            )
+        route, refined_query = route_and_refine(
+            user_input=user_input,
+            memory=memory,
+            history=history,
+            user_facts=user_facts,
+        )
 
-            # Get recent history for context
-            recent_history, _ = get_selective_history(history, recent_count=3)
-
-            # Refine query based on identified issue
-            refined_query, search_strategy = refine_query_for_retry(
-                original_query=user_input,
-                previous_answer=previous_answers[-1] if previous_answers else "",
-                issue_type=quality_eval.get("issue_type", ""),
-                reason=quality_eval.get("reason", ""),
-                conversation_history=recent_history,
-            )
-
-            # Determine route from strategy
-            route = "google" if "google" in search_strategy else "rag"
-
-            # Store refinement in history
-            refinement_history = state.get("refinement_history", [])
-            refinement_history.append(
-                {
-                    "iteration": iteration_count,
-                    "issue": quality_eval.get("issue_type", ""),
-                    "strategy": search_strategy,
-                    "refined_query": refined_query,
-                }
-            )
-
-            return {
-                **state,
+        logger.info(
+            "Routing decision with personalization",
+            extra={
+                "session_id": session_id,
                 "route": route,
                 "refined_query": refined_query,
-                "refinement_history": refinement_history,
-            }
+                "has_user_facts": bool(user_facts),
+            },
+        )
 
-        # 🆕 First iteration - normal routing
-        else:
-            route, refined_query = route_and_refine(
-                user_input=user_input,
-                memory=memory,
-                history=history,
-                user_facts=user_facts,
-            )
-
-            logger.info(
-                "First iteration - normal routing",
-                extra={
-                    "session_id": session_id,
-                    "route": route,
-                    "refined_query": refined_query,
-                },
-            )
-
-            return {
-                **state,
-                "route": route,
-                "refined_query": refined_query,
-            }
+        return {
+            **state,
+            "route": route,
+            "refined_query": refined_query,
+        }
 
     except Exception as e:
         logger.exception(
@@ -471,8 +402,15 @@ def check_rag_confidence(state: ConversationState) -> ConversationState:
         }
 
 
+# ============================================================================
+# Node 6: Google Search (Enhanced - No Source Disclosure) 🆕
+# ============================================================================
+
+
 def perform_google_search(state: ConversationState) -> ConversationState:
-    """Google Search with no source disclosure."""
+    """
+    Enhanced: Google Search with no source disclosure, includes user facts.
+    """
     session_id = state["session_id"]
     query = state["refined_query"]
     memory = state.get("memory_summary", "")
@@ -480,17 +418,34 @@ def perform_google_search(state: ConversationState) -> ConversationState:
     rag_context_low = state.get("rag_low_conf_context", "")
     user_facts = state.get("user_facts", {})
 
-    logger.info("Node: perform_google_search", extra={"session_id": session_id})
+    logger.info(
+        "Node: perform_google_search (no source disclosure)",
+        extra={"session_id": session_id},
+    )
 
     try:
+        # Build history summary
         recent_history, _ = get_selective_history(history, recent_count=3)
 
+        # Call Google Search with user facts
         google_answer = google_search_summary(
             query=query,
             history_summary=f"{memory} | {recent_history}",
             full_history=history.messages,
             rag_context=rag_context_low,
             user_facts=user_facts,
+        )
+
+        # Save to history
+        history.add_message(AIMessage(content=google_answer))
+        save_session_history(session_id, history)
+
+        logger.info(
+            "Google Search complete (source hidden)",
+            extra={
+                "session_id": session_id,
+                "response_len": len(google_answer),
+            },
         )
 
         return {
@@ -504,7 +459,13 @@ def perform_google_search(state: ConversationState) -> ConversationState:
             "perform_google_search failed", extra={"session_id": session_id}
         )
 
-        fallback_msg = "متاسفانه نتونستم اطلاعات رو پیدا کنم."
+        fallback_msg = "متاسفانه نتونستم اطلاعات رو پیدا کنم. میتونی جزئیات بیشتری بدی؟"
+
+        try:
+            history.add_message(AIMessage(content=fallback_msg))
+            save_session_history(session_id, history)
+        except:
+            pass
 
         return {
             **state,
@@ -514,8 +475,15 @@ def perform_google_search(state: ConversationState) -> ConversationState:
         }
 
 
+# ============================================================================
+# Node 7: Build Final Input (Enhanced) 🆕
+# ============================================================================
+
+
 def build_final_input(state: ConversationState) -> ConversationState:
-    """Build context block with personalization."""
+    """
+    Enhanced: Build context block with personalized facts and selective history.
+    """
     session_id = state["session_id"]
     rag_context = state.get("rag_context", "")
     user_facts = state.get("user_facts", {})
@@ -524,9 +492,13 @@ def build_final_input(state: ConversationState) -> ConversationState:
     memory = state.get("memory_summary", "")
     query = state["refined_query"]
 
-    logger.info("Node: build_final_input", extra={"session_id": session_id})
+    logger.info(
+        "Node: build_final_input (with personalization)",
+        extra={"session_id": session_id},
+    )
 
     try:
+        # Build comprehensive context block
         context_block = build_context_block(
             rag_context=rag_context,
             user_facts=user_facts,
@@ -535,10 +507,21 @@ def build_final_input(state: ConversationState) -> ConversationState:
             memory=memory,
         )
 
+        logger.debug(
+            "Context block built",
+            extra={
+                "session_id": session_id,
+                "context_len": len(context_block),
+                "has_rag": bool(rag_context),
+                "has_facts": bool(user_facts),
+                "has_history": bool(recent_history),
+            },
+        )
+
         return {
             **state,
             "context_block": context_block,
-            "final_input": query,
+            "final_input": query,  # Query is separate, context goes in context_block
         }
 
     except Exception as e:
@@ -551,16 +534,27 @@ def build_final_input(state: ConversationState) -> ConversationState:
         }
 
 
+# ============================================================================
+# Node 8: Generate LLM Response (Enhanced) 🆕
+# ============================================================================
+
+
 def generate_llm_response(state: ConversationState) -> ConversationState:
-    """Generate response with full personalized context."""
+    """
+    Enhanced: Generate response with full personalized context.
+    """
     session_id = state["session_id"]
     context_block = state.get("context_block", "")
     final_input = state.get("final_input", "")
+    history = state.get("history", ChatMessageHistory())
 
-    logger.info("Node: generate_llm_response", extra={"session_id": session_id})
+    logger.info(
+        "Node: generate_llm_response (with context)", extra={"session_id": session_id}
+    )
 
     try:
-        from .prompts import get_main_prompt
+        # Build prompt with context block
+        from prompts import get_main_prompt
 
         prompt = get_main_prompt()
         chain = prompt | llm
@@ -573,6 +567,10 @@ def generate_llm_response(state: ConversationState) -> ConversationState:
         )
 
         assistant_text = response.content
+
+        # Save response to history
+        history.add_message(AIMessage(content=assistant_text))
+        save_session_history(session_id, history)
 
         logger.info(
             "LLM generation complete",
@@ -593,6 +591,12 @@ def generate_llm_response(state: ConversationState) -> ConversationState:
         )
 
         fallback_msg = "ببخشید، مشکلی پیش اومد."
+
+        try:
+            history.add_message(AIMessage(content=fallback_msg))
+            save_session_history(session_id, history)
+        except:
+            pass
 
         return {
             **state,
@@ -706,315 +710,6 @@ def create_conversation_graph() -> StateGraph:
     app = workflow.compile()
 
     logger.info("Enhanced LangGraph compiled with clarification + personalization")
-
-    return app
-
-
-# ============================================================================
-# Export
-# ============================================================================
-
-conversation_graph = create_conversation_graph()
-
-
-def evaluate_response_quality(state: ConversationState) -> ConversationState:
-    """
-    Evaluate generated answer quality using LLM-as-judge.
-    Decides if answer is good enough or needs refinement.
-    """
-    session_id = state["session_id"]
-    query = state["user_input_raw"]
-    answer = state.get("llm_output", "")
-    route = state.get("route", "unknown")
-    rag_context = state.get("rag_context", "")
-    iteration_count = state.get("iteration_count", 0)
-
-    logger.info(
-        "Node: evaluate_response_quality",
-        extra={"session_id": session_id, "iteration": iteration_count},
-    )
-
-    try:
-        # Determine context source
-        if route == "google":
-            context_used = "Google Search"
-        elif rag_context:
-            context_used = "RAG (پایگاه داده محلی)"
-        else:
-            context_used = "Chat (بدون زمینه خاص)"
-
-        # Evaluate quality
-        evaluation = evaluate_answer_quality(
-            query=query,
-            answer=answer,
-            context_used=context_used,
-        )
-
-        # Store answer in history
-        previous_answers = state.get("previous_answers", [])
-        previous_answers.append(answer)
-
-        logger.info(
-            "Quality evaluation result",
-            extra={
-                "session_id": session_id,
-                "iteration": iteration_count,
-                "quality_score": evaluation.get("quality_score", 0),
-                "issue_type": evaluation.get("issue_type", "unknown"),
-                "recommendation": evaluation.get("recommendation", "unknown"),
-            },
-        )
-
-        return {
-            **state,
-            "quality_evaluation": evaluation,
-            "previous_answers": previous_answers,
-            "final_quality_score": evaluation.get("quality_score", 0),
-        }
-
-    except Exception as e:
-        logger.exception(
-            "evaluate_response_quality failed", extra={"session_id": session_id}
-        )
-        # On error, assume quality is acceptable
-        return {
-            **state,
-            "quality_evaluation": {
-                "quality_score": 0.8,
-                "issue_type": "good",
-                "recommendation": "accept",
-                "reason": "Evaluation failed",
-            },
-            "previous_answers": state.get("previous_answers", []) + [answer],
-            "final_quality_score": 0.8,
-        }
-
-
-# ============================================================================
-# 🆕 Node 8: Prepare Retry (NEW)
-# ============================================================================
-
-
-def prepare_retry_iteration(state: ConversationState) -> ConversationState:
-    """
-    Prepare for retry iteration by incrementing counter.
-    """
-    session_id = state["session_id"]
-    iteration_count = state.get("iteration_count", 0)
-
-    new_iteration = iteration_count + 1
-
-    logger.info(
-        "Node: prepare_retry_iteration",
-        extra={
-            "session_id": session_id,
-            "iteration": new_iteration,
-        },
-    )
-
-    return {
-        **state,
-        "iteration_count": new_iteration,
-    }
-
-
-# ============================================================================
-# 🆕 Node 9: Finalize Answer (NEW)
-# ============================================================================
-
-
-def finalize_answer(state: ConversationState) -> ConversationState:
-    """
-    Finalize answer and save to history.
-    No retry attempts are shown to user (hidden).
-    """
-    session_id = state["session_id"]
-    llm_output = state.get("llm_output", "")
-    history = state.get("history", ChatMessageHistory())
-    iteration_count = state.get("iteration_count", 0)
-    final_quality_score = state.get("final_quality_score", 0)
-
-    logger.info(
-        "Node: finalize_answer",
-        extra={
-            "session_id": session_id,
-            "iterations": iteration_count,
-            "final_quality": final_quality_score,
-        },
-    )
-
-    try:
-        # Save final answer to history (no retry disclosure)
-        history.add_message(AIMessage(content=llm_output))
-        save_session_history(session_id, history)
-
-        logger.info(
-            "Answer finalized",
-            extra={
-                "session_id": session_id,
-                "total_iterations": iteration_count + 1,
-                "final_quality_score": final_quality_score,
-            },
-        )
-
-        return {
-            **state,
-            "llm_output": llm_output,
-        }
-
-    except Exception as e:
-        logger.exception("finalize_answer failed", extra={"session_id": session_id})
-        return state
-
-
-# ============================================================================
-# Conditional Edges
-# ============================================================================
-
-
-def should_perform_rag(state: ConversationState) -> str:
-    """Route based on classification."""
-    route = state.get("route", "google")
-    return route
-
-
-def should_use_google_fallback(state: ConversationState) -> str:
-    """Decide Google fallback after RAG."""
-    rag_context = state.get("rag_context", "")
-    return "build_input" if rag_context else "google"
-
-
-def should_retry_or_finish(state: ConversationState) -> str:
-    """
-    🆕 NEW: Decide if answer needs refinement or is acceptable.
-
-    Returns:
-        "retry" if should refine and retry
-        "finish" if answer is acceptable or max iterations reached
-    """
-    iteration_count = state.get("iteration_count", 0)
-    quality_evaluation = state.get("quality_evaluation", {})
-
-    # Check max iterations
-    if iteration_count >= MAX_REFINEMENT_ITERATIONS:
-        logger.info(
-            "Max iterations reached, finishing",
-            extra={
-                "session_id": state.get("session_id"),
-                "iterations": iteration_count,
-            },
-        )
-        return "finish"
-
-    # Check if should refine
-    if should_refine_answer(quality_evaluation):
-        logger.info(
-            "Quality gate failed, will retry",
-            extra={
-                "session_id": state.get("session_id"),
-                "iteration": iteration_count,
-                "quality_score": quality_evaluation.get("quality_score", 0),
-            },
-        )
-        return "retry"
-    else:
-        logger.info(
-            "Quality acceptable, finishing",
-            extra={
-                "session_id": state.get("session_id"),
-                "quality_score": quality_evaluation.get("quality_score", 0),
-            },
-        )
-        return "finish"
-
-
-# ============================================================================
-# Graph Construction with Self-Correction Loop
-# ============================================================================
-
-
-def create_conversation_graph() -> StateGraph:
-    """
-    Enhanced graph with quality gate and iterative refinement.
-
-    Flow:
-    START → load_history → route_and_refine → [RAG/Google paths]
-          → generate_llm_response → evaluate_quality
-          ├─ Good quality OR max iterations? → finalize → END
-          └─ Poor quality? → prepare_retry → route_and_refine (loop back)
-    """
-    workflow = StateGraph(ConversationState)
-
-    # Add nodes
-    workflow.add_node("load_history_memory_and_facts", load_history_memory_and_facts)
-    workflow.add_node("route_and_refine_query", route_and_refine_query)
-    workflow.add_node("perform_rag_retrieval", perform_rag_retrieval)
-    workflow.add_node("check_rag_confidence", check_rag_confidence)
-    workflow.add_node("perform_google_search", perform_google_search)
-    workflow.add_node("build_final_input", build_final_input)
-    workflow.add_node("generate_llm_response", generate_llm_response)
-
-    # 🆕 NEW: Quality gate nodes
-    workflow.add_node("evaluate_response_quality", evaluate_response_quality)
-    workflow.add_node("prepare_retry_iteration", prepare_retry_iteration)
-    workflow.add_node("finalize_answer", finalize_answer)
-
-    # Define edges
-    workflow.set_entry_point("load_history_memory_and_facts")
-
-    workflow.add_edge("load_history_memory_and_facts", "route_and_refine_query")
-
-    # Routing logic
-    workflow.add_conditional_edges(
-        "route_and_refine_query",
-        should_perform_rag,
-        {
-            "rag": "perform_rag_retrieval",
-            "google": "perform_google_search",
-            "chat": "build_final_input",
-        },
-    )
-
-    workflow.add_edge("perform_rag_retrieval", "check_rag_confidence")
-
-    workflow.add_conditional_edges(
-        "check_rag_confidence",
-        should_use_google_fallback,
-        {
-            "google": "perform_google_search",
-            "build_input": "build_final_input",
-        },
-    )
-
-    workflow.add_edge("build_final_input", "generate_llm_response")
-
-    # 🆕 NEW: After generation, evaluate quality
-    workflow.add_edge("generate_llm_response", "evaluate_response_quality")
-
-    # 🆕 NEW: Self-correction loop
-    workflow.add_conditional_edges(
-        "evaluate_response_quality",
-        should_retry_or_finish,
-        {
-            "retry": "prepare_retry_iteration",  # Poor quality → retry
-            "finish": "finalize_answer",  # Good quality → finish
-        },
-    )
-
-    # 🆕 NEW: Retry loop back to routing
-    workflow.add_edge("prepare_retry_iteration", "route_and_refine_query")
-
-    # Google search goes directly to quality evaluation
-    workflow.add_edge("perform_google_search", "evaluate_response_quality")
-
-    # Final answer goes to END
-    workflow.add_edge("finalize_answer", END)
-
-    app = workflow.compile()
-
-    logger.info(
-        "Self-correcting LangGraph compiled with quality gate and iterative refinement"
-    )
 
     return app
 

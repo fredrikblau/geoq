@@ -5,9 +5,8 @@ load_dotenv()
 
 # --- Gemini API ---
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
-print(GEMINI_API_KEY)
-if not GEMINI_API_KEY:
-    raise ValueError("GEMINI_API_KEY not set in .env")
+# Importing the package must remain safe for local development, tests, and
+# health checks. The chat path reports a useful configuration error at runtime.
 
 # --- Redis ---
 REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
@@ -22,7 +21,14 @@ MAX_CONTEXT_CHARS = int(os.getenv("MAX_CONTEXT_CHARS", "3500"))
 MAX_HISTORY_LEN = int(os.getenv("MAX_HISTORY_LEN", "20"))  # Max messages to keep
 
 # --- Server ---
-PORT = int(os.getenv("PORT", 8001))
+PORT = int(os.getenv("PORT", "8001"))
+
+# Comma-separated origins, for example: https://geoq.ir,http://localhost:3000
+CORS_ORIGINS = [
+    origin.strip()
+    for origin in os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
+    if origin.strip()
+]
 
 
 # 🆕 NEW: Self-Correction Configuration
