@@ -1,4 +1,0 @@
-[submodule "frontend/open-webui"]
-	path = frontend/open-webui
-	url = https://github.com/fredrikblau/open-webui.git
-	branch = geoq

@@ -67,6 +67,18 @@ Set `"stream": true` to receive Server-Sent Events. Each event contains a small 
 | «دره ستاره‌ها کجاست؟» | Prefer local retrieval and Persian context | `data/knowledge/qa_qeshm.json` |
 | «من غذای دریایی دوست دارم» then «کجا بروم؟» | Use conversation memory to personalize | Memory and fact extraction |
 
+## What a detailed answer looks like
+
+For a question such as «برای یک روز در قشم برنامه سفر بده», Geoq is intended to return an actionable plan rather than a generic list:
+
+1. **Morning:** start with a nearby natural attraction such as the Stars Valley area and consider heat and travel time.
+2. **Lunch:** suggest a local food direction while asking about dietary preferences and budget.
+3. **Afternoon:** include practical preparation for places such as Chahkooh Canyon—water, shoes, and route conditions.
+4. **Sunset:** suggest a tide-dependent location such as Naz Island and remind the visitor to check that day’s tide and access conditions.
+5. **Follow-up:** ask whether the visitor has a car, how many people are traveling, and which season they are visiting in order to refine the route.
+
+The exact recommendation should come from current local data and the connected lookup path. This example describes the intended answer quality and safety behavior; it is not a guarantee that every place is open or accessible.
+
 ## Visual showcase
 
 ![Geoq Persian showcase](assets/geoq-showcase.png)

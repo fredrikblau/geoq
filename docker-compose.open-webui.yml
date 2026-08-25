@@ -1,7 +1,9 @@
 services:
   open-webui:
     build:
-      context: ./frontend/open-webui
+      # Clone the frontend next to this repository; it is intentionally not
+      # vendored or tracked as a Geoq submodule.
+      context: ${OPEN_WEBUI_DIR:-../open-webui}
       dockerfile: Dockerfile
     container_name: geoq-open-webui
     ports:

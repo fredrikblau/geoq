@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-0b4f6c.svg)](LICENSE)
 [![Good first issues](https://img.shields.io/github/issues/fredrikblau/geoq/good%20first%20issue?label=good%20first%20issues)](https://github.com/fredrikblau/geoq/issues?q=is%3Aissue+is%3Aopen+label%3A%22good%20first%20issue%22)
 
-![Geoq browser chat](docs/assets/geoq-chat-demo.png)
+![Geoq reference chat client](docs/assets/geoq-chat-demo.png)
 
 Geoq is an open-source local chat assistant for Qeshm Island and the surrounding islands of Hormoz, Hengam, Lark, and Naz. It helps residents and visitors find useful local knowledge in Persian: places to visit, food, accommodation, transport, services, shopping, culture, and practical travel advice.
 
@@ -15,6 +15,20 @@ This project exists because local knowledge should be easy to access, easy to im
 ## Why Geoq?
 
 Generic travel assistants often miss the details that matter on an island: seasonal routes, local names, nearby alternatives, Persian context, and the difference between a recommendation and an official fact. Geoq combines a local knowledge base with an AI conversation layer so contributors can improve the answers directly.
+
+## Geoq versus a general assistant
+
+ChatGPT and similar general-purpose assistants are excellent at broad knowledge, writing, coding, and brainstorming. Geoq has a narrower purpose and a local advantage:
+
+| | General assistant | Geoq |
+| --- | --- | --- |
+| Scope | The whole world | Qeshm, Hormoz, Hengam, Lark, and Naz Island |
+| Local context | Often generic or incomplete | Persian names, island routes, local services, and community context |
+| Knowledge source | Broad model knowledge and connected tools | A reviewable local knowledge base collected with local guides, plus fresh lookup when needed |
+| Hard-to-find facts | May not know information that is never published online | Can preserve useful local knowledge that is absent from public websites |
+| Best use | General questions and open-ended work | Practical, detailed decisions while visiting or living in the islands |
+
+Geoq is not trying to replace general AI. It turns local expertise into a shared, maintainable resource and gives that expertise a conversational interface. Local knowledge can still change or be wrong, so safety-sensitive and time-sensitive details should be verified.
 
 ## Features
 
@@ -47,7 +61,7 @@ The intended experience is a short, practical conversation—not a wall of gener
 اگر با خودرو نیستی یا فصل سفرت را بگویی، برنامه را دقیق‌تر و عملی‌تر می‌کنم.
 ```
 
-The production-oriented frontend is the customized [Open WebUI `geoq` branch](https://github.com/fredrikblau/open-webui/tree/geoq), linked here as a pinned submodule. The repository also includes [`t.html`](t.html), a small standalone RTL Persian landing/showcase card. See [docs/OPEN-WEBUI.md](docs/OPEN-WEBUI.md) for the full connection setup and [docs/SHOWCASE.md](docs/SHOWCASE.md) for API examples.
+The production-oriented frontend is the customized [Open WebUI `geoq` branch](https://github.com/fredrikblau/open-webui/tree/geoq), kept as a separate repository. The repository also includes [`t.html`](t.html), a small standalone RTL Persian landing/showcase card. See [docs/OPEN-WEBUI.md](docs/OPEN-WEBUI.md) for the full connection setup and [docs/SHOWCASE.md](docs/SHOWCASE.md) for API examples.
 
 For a working browser client, open [`examples/chat.html`](examples/chat.html) while the API is running. A dependency-free command-line client is available at [`examples/chat.py`](examples/chat.py).
 
@@ -116,7 +130,8 @@ docker compose up --build
 To run Geoq together with the customized Open WebUI frontend:
 
 ```bash
-git submodule update --init --recursive
+git clone --branch geoq --depth 1 https://github.com/fredrikblau/open-webui.git ../open-webui
+OPEN_WEBUI_DIR=../open-webui \
 docker compose -f docker-compose.yml -f docker-compose.open-webui.yml up --build
 ```
 
@@ -130,7 +145,7 @@ Copy `.env.example` to `.env`. `GEMINI_API_KEY` is required for AI responses. `R
 
 ```text
 api/                         canonical FastAPI + LangGraph implementation
-frontend/open-webui          pinned customized Open WebUI frontend (submodule)
+Open WebUI (external)         customized frontend in `fredrikblau/open-webui:geoq`
 docs/                        public architecture and showcase documentation
 data/knowledge/              reviewed local tourism seed data
 embed_qa.py                 build the local Chroma index
