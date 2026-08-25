@@ -73,11 +73,11 @@ Set `"stream": true` to receive Server-Sent Events. Each event contains a small 
 
 Open [`t.html`](../t.html) locally in a browser to see the RTL Persian introduction card for جعوک. It is standalone and can be embedded into a future web client.
 
-The working chat client is built from the same frontend in [`examples/chat.html`](../examples/chat.html):
+The reference chat client is built from [`examples/chat.html`](../examples/chat.html):
 
 ![Geoq browser chat demo](assets/geoq-chat-demo.png)
 
-## Working browser example
+## Reference browser example
 
 Start the API, then serve the repository root:
 
@@ -86,4 +86,4 @@ python -m api
 python -m http.server 8080
 ```
 
-Open [`examples/chat.html`](../examples/chat.html) at `http://localhost:8080/examples/chat.html`. The page sends real non-streaming requests to `http://localhost:8001/v1/chat/completions` and displays the Persian response. The browser API requires `CORS_ORIGINS=http://localhost:8080` in `.env`.
+Open [`examples/chat.html`](../examples/chat.html) at `http://localhost:8080/examples/chat.html`. This lightweight reference page sends real non-streaming requests to `http://localhost:8001/v1/chat/completions` and displays the Persian response. The production-oriented frontend is the customized Open WebUI branch; see [OPEN-WEBUI.md](OPEN-WEBUI.md). The browser API requires `CORS_ORIGINS=http://localhost:8080` in `.env`.

@@ -47,7 +47,7 @@ The intended experience is a short, practical conversation—not a wall of gener
 اگر با خودرو نیستی یا فصل سفرت را بگویی، برنامه را دقیق‌تر و عملی‌تر می‌کنم.
 ```
 
-The repository also includes [`t.html`](t.html), a small RTL Persian landing/showcase card for embedding in a front end. For complete request/response examples and expected behavior, see [docs/SHOWCASE.md](docs/SHOWCASE.md).
+The production-oriented frontend is the customized [Open WebUI `geoq` branch](https://github.com/fredrikblau/open-webui/tree/geoq), linked here as a pinned submodule. The repository also includes [`t.html`](t.html), a small standalone RTL Persian landing/showcase card. See [docs/OPEN-WEBUI.md](docs/OPEN-WEBUI.md) for the full connection setup and [docs/SHOWCASE.md](docs/SHOWCASE.md) for API examples.
 
 For a working browser client, open [`examples/chat.html`](examples/chat.html) while the API is running. A dependency-free command-line client is available at [`examples/chat.py`](examples/chat.py).
 
@@ -113,6 +113,13 @@ For Redis-backed local development:
 docker compose up --build
 ```
 
+To run Geoq together with the customized Open WebUI frontend:
+
+```bash
+git submodule update --init --recursive
+docker compose -f docker-compose.yml -f docker-compose.open-webui.yml up --build
+```
+
 To build the local Chroma index from seed data, run `python embed_qa.py`. The generated `qeshm_db*` directories are intentionally ignored by Git.
 
 ## Configuration
@@ -123,6 +130,7 @@ Copy `.env.example` to `.env`. `GEMINI_API_KEY` is required for AI responses. `R
 
 ```text
 api/                         canonical FastAPI + LangGraph implementation
+frontend/open-webui          pinned customized Open WebUI frontend (submodule)
 docs/                        public architecture and showcase documentation
 data/knowledge/              reviewed local tourism seed data
 embed_qa.py                 build the local Chroma index

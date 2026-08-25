@@ -53,3 +53,12 @@ def test_working_examples_target_the_real_api():
     assert "/v1/chat/completions" in client
     assert "/v1/chat/completions" in browser
     assert '"stream": False' in client
+
+
+def test_open_webui_integration_pins_the_geoq_branch_and_backend_url():
+    gitmodules = (ROOT / ".gitmodules").read_text(encoding="utf-8")
+    compose = (ROOT / "docker-compose.open-webui.yml").read_text(encoding="utf-8")
+    docs = (ROOT / "docs" / "OPEN-WEBUI.md").read_text(encoding="utf-8")
+    assert "branch = geoq" in gitmodules
+    assert "OPENAI_API_BASE_URLS: http://geoq:8001/v1" in compose
+    assert "docker-compose.open-webui.yml" in docs
