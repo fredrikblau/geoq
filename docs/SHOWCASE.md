@@ -85,7 +85,9 @@ The exact recommendation should come from current local data and the connected l
 
 Open [`t.html`](../t.html) locally in a browser to see the RTL Persian introduction card for جعوک. It is standalone and can be embedded into a future web client.
 
-The reference chat client is built from [`examples/chat.html`](../examples/chat.html):
+The bundled customized Open WebUI experience is shown below. The small reference
+client in [`examples/chat.html`](../examples/chat.html) remains available for
+API smoke testing:
 
 ![Geoq browser chat demo](assets/geoq-chat-demo.png)
 

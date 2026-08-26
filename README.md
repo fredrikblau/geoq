@@ -6,7 +6,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-0b4f6c.svg)](LICENSE)
 [![Good first issues](https://img.shields.io/github/issues/fredrikblau/geoq/good%20first%20issue?label=good%20first%20issues)](https://github.com/fredrikblau/geoq/issues?q=is%3Aissue+is%3Aopen+label%3A%22good%20first%20issue%22)
 
-![Geoq reference chat client](docs/assets/geoq-chat-demo.png)
+![Geoq customized Open WebUI chat](docs/assets/geoq-chat-demo.png)
 
 Geoq is an open-source local chat assistant for Qeshm Island and the surrounding islands of Hormoz, Hengam, Lark, and Naz. It helps residents and visitors find useful local knowledge in Persian: places to visit, food, accommodation, transport, services, shopping, culture, and practical travel advice.
 
